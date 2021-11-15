@@ -13,6 +13,8 @@ Uses the default Flask development server.
     ```
 
     Test it out at [http://localhost:5000](http://localhost:5000). The "web" folder is mounted into the container and your code changes apply automatically.
+    
+    In case of errors, chmod +x on entrypoint.sh
 
 ### Production
 
@@ -26,3 +28,6 @@ Uses gunicorn + nginx.
     ```
 
     Test it out at [http://localhost:1337](http://localhost:1337). No mounted folders. To apply changes, the image must be re-built.
+    
+    
+    In case of errors, chmod +x on entrypoint.prod.sh

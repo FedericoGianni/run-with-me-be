@@ -6,3 +6,6 @@ __pycache
 .env.prod.db
 .env.prod.dbgui
 .Identifier	
+
+services/database/
+services/pgadmin/

@@ -17,9 +17,18 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=hello_flask
-      - POSTGRES_PASSWORD=hello_flask
-      - POSTGRES_DB=hello_flask_dev
+      - ./.env.dev
+  pgadmin:
+    image: dpage/pgadmin4:4.6
+    restart: always
+    environment:
+      - ./.env.dev
+    ports:
+      - 8080:80
+    volumes:
+      - ./data/pgadmin-data:/var/lib/pgadmin
+    depends_on:
+     - db
 
 volumes:
   postgres_data:

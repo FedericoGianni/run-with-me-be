@@ -30,6 +30,17 @@ services:
       - 1337:80
     depends_on:
       - web
+  pgadmin:
+    image: dpage/pgadmin4:4.6
+    restart: always
+    environment:
+      - ./.env.prod.dbgui
+    ports:
+      - 8080:80
+    volumes:
+      - ./data/pgadmin-data:/var/lib/pgadmin
+    depends_on:
+     - db
 
 volumes:
   postgres_data_prod:

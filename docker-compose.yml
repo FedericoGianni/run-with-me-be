@@ -7,55 +7,30 @@ services:
       - ./services/web/:/usr/src/app/
     ports:
       - 5005:5005
-    
     depends_on:
       - db
-    networks:
-      - rwm_internal
-
   db:
     image: postgres:13-alpine
     volumes:
-      - ./services/database:/var/lib/postgresql/data
+      - ./services/postgres:/var/lib/postgresql/data/
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    networks:
-      - rwm_internal
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
 
   pgadmin:
     image: dpage/pgadmin4:4.6
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: runwithme@email.com 
-      PGADMIN_DEFAULT_PASSWORD: hello_flask
-      POSTGRES_PASSWORD: password
+      - PGADMIN_DEFAULT_EMAIL=runwithme@email.com
+      - PGADMIN_DEFAULT_PASSWORD=hello_flask
     ports:
       - 8080:80
     volumes:
       - ./services/pgadmin:/var/lib/pgadmin
     depends_on:
      - db
-    networks:
-      - rwm_internal
 
-  nginx:
-    image: nginx:1.15-alpine
-    #restart: always
-    # restart: unless-stopped
-    
-    volumes:
-      - ./services/nginx:/etc/nginx/conf.d
-    ports:
-      - "80:80"
-      - "443:443"
-      - "5555:5555"
-      - "6006:6006"
-
-    networks:
-      - rwm_internal
-
-networks:
-  rwm_internal:
-    driver: bridge
+volumes:
+  postgres_data:

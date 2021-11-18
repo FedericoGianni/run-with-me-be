@@ -9,3 +9,4 @@ __pycache
 
 services/database/
 services/pgadmin/
+services/postgres/

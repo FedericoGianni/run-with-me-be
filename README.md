@@ -20,7 +20,7 @@ Uses the default Flask development server.
 
 Uses gunicorn + nginx.
 
-1. Rename *.env.prod-sample* to *.env.prod* and *.env.prod.db-sample* to *.env.prod.db*. Update the environment variables.
+1. Rename *.env.prod-sample* to *.env.prod*, *.env.prod.db-sample* to *.env.prod.db* and *.env.prod.dbgui-sample* to *.env.prod.dbgui*. Update the environment variables.
 1. Build the images and run the containers:
 
     ```sh

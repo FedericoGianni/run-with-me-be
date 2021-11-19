@@ -2,35 +2,47 @@ version: '3.8'
 
 services:
   web:
-    build: ./services/web
+    build:
+      context: ./services/web
+      dockerfile: Dockerfile
+    command: gunicorn --bind 0.0.0.0:5000 Api:app
     volumes:
-      - ./services/web/:/usr/src/app/
-    ports:
-      - 5005:5005
+      - static_volume:/home/app/web/project/static
+      - media_volume:/home/app/web/project/media
+    expose:
+      - 5000
+    env_file:
+      - ./.env.prod
     depends_on:
       - db
   db:
     image: postgres:13-alpine
     volumes:
-      - ./services/postgres:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-
-
+      - postgres_data_prod:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.prod.db
+  nginx:
+    build: ./services/nginx
+    volumes:
+      - static_volume:/home/app/web/project/static
+      - media_volume:/home/app/web/project/media
+    ports:
+      - 1337:80
+    depends_on:
+      - web
   pgadmin:
-    image: dpage/pgadmin4:4.6
+    image: dpage/pgadmin4:latest
     restart: always
     environment:
-      - PGADMIN_DEFAULT_EMAIL=runwithme@email.com
-      - PGADMIN_DEFAULT_PASSWORD=hello_flask
+      - ./.env.prod.dbgui
     ports:
       - 8080:80
     volumes:
-      - ./services/pgadmin:/var/lib/pgadmin
+      - ./data/pgadmin-data:/var/lib/pgadmin
     depends_on:
      - db
 
 volumes:
-  postgres_data:
+  postgres_data_prod:
+  static_volume:
+  media_volume:

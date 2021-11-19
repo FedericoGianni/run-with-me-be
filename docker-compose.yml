@@ -7,42 +7,58 @@ services:
       dockerfile: Dockerfile
     command: gunicorn --bind 0.0.0.0:5000 Api:app
     volumes:
-      - static_volume:/home/app/web/project/static
-      - media_volume:/home/app/web/project/media
+      - ./services/nginx/static:/home/app/web/project/static
+      - ./services/nginx/media:/home/app/web/project/media
     expose:
       - 5000
     env_file:
       - ./.env.prod
     depends_on:
       - db
+    networks:
+      - rwm_internal
+  
   db:
-    image: postgres:13-alpine
+    image: mysql:5
+    #restart: unless-stopped
+    hostname: mysql
+    environment:
+      - ./.env.prod.db
     volumes:
-      - postgres_data_prod:/var/lib/postgresql/data/
+      - ./services/database:/var/lib/mysql/
+    networks:
+      - rwm_internal
     env_file:
       - ./.env.prod.db
+
   nginx:
     build: ./services/nginx
     volumes:
-      - static_volume:/home/app/web/project/static
-      - media_volume:/home/app/web/project/media
+      - ./services/nginx/static:/home/app/web/project/static
+      - ./services/nginx/media:/home/app/web/project/media
     ports:
       - 1337:80
     depends_on:
       - web
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    restart: always
+    networks:
+        - rwm_internal
+  
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    #restart: unless-stopped
     environment:
-      - ./.env.prod.dbgui
+      PMA_HOST: mysql
+    depends_on:
+      - db
     ports:
       - 8080:80
     volumes:
-      - ./data/pgadmin-data:/var/lib/pgadmin
-    depends_on:
-     - db
+      - ./services/phpmyadmin:/var/lib/phpmyadmin
+    networks:
+      - rwm_internal
 
-volumes:
-  postgres_data_prod:
-  static_volume:
-  media_volume:
+
+networks:
+  rwm_internal:
+    driver: bridge

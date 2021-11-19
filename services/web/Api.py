@@ -1,5 +1,5 @@
 from flask import Flask
-from project.db.DbController import DbController
+from project.dbmysql.DbController import DbController
 
 
 app = Flask(__name__)

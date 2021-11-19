@@ -10,3 +10,5 @@ __pycache
 services/database/
 services/pgadmin/
 services/postgres/
+# services/nginx/static/
+# services/nginx/media/

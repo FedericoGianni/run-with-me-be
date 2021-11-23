@@ -1,6 +1,4 @@
-from dbmysql.DbController import DbController
-
-
+from project.dbmysql.DbController import DbController
 
 class Middleware():
     def __init__(self) -> None:

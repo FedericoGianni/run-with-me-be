@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy import create_engine, MetaData, Table, and_
 
-from DbParser import DbParser
+from project.dbmysql.DbParser import DbParser
 
-DB_TYPE = 'mysql'
+DB_TYPE = 'mysql+pymysql'
 DB_USER = 'hello_flask'
 DB_PASSWORD = 'hello_flask'
 DB_ADDRESS = 'db:3306'
@@ -15,7 +15,7 @@ class DbController():
     def __init__(self):
         self.__engine = create_engine(DB_TYPE+"://"+DB_USER+":"+DB_PASSWORD+"@"+DB_ADDRESS+"/"+DB_NAME, pool_pre_ping=True)
         metadata = MetaData()
-        self.__eventsTable = Table("Events", metadata, autoload = True, autoload_with = self.__engine)
+        self.__eventsTable = Table("events", metadata, autoload = True, autoload_with = self.__engine)
         self.__parser = DbParser()
 
 

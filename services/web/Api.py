@@ -1,4 +1,5 @@
 from flask import Flask
+from flask import request
 from flask import Response
 from flask.globals import request
  
@@ -17,14 +18,14 @@ def hello_world():
 @app.route(GET_EVENTS, methods=['GET'])
 def getEvents():
     #check the correctness of req
-    #long = request.args.get('long', default=None, type = float)
-    #lat = request.args.get('lat', default=None, type=float)
-    #if (long != None & lat != None):
+    long = request.args.get('long')
+    lat = request.args.get('lat')
+    
+    if(long != None and lat != None):
+        #call to middleware
+        return Response("events response test" + " long: " + long + " lat: " + lat, status = 200)   
         #return Response(middleware.getEvents(long, lat), status=200)
-    return Response("events response test", status = 200)   
-    # + long +  "lat: " + lat, status=200)
     return Response("bad request", status=400)
-    #call to middleware
 
 
 @app.route("/register/<message>", methods=['GET'])

@@ -95,7 +95,21 @@ class DbController():
             
             ))
             result = __connection.execute(query).fetchall()
-            result = self.__parser.event2Json(result)
+            result = self.__parser.events2Json(result)
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            #result = False, GenericDatabaseError(e)
+            result = None
+        __connection.close()
+        return result
+
+    def getEventById(self, id):
+        # sqlalchemy query to db
+        __connection = self.__engine.connect()
+        try:
+            query = select([self.__eventsTable]).where(self.__eventsTable.c.id == id)
+            result = __connection.execute(query).fetchall()
+            result = self.__parser.events2Json(result)
         except Exception as e:
             logging.error("{message}.".format(message=e))
             #result = False, GenericDatabaseError(e)

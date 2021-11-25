@@ -6,7 +6,7 @@ class DbParser():
     def __init__(self) -> None:
         pass
 
-    def event2Json(self, events):
+    def events2Json(self, events):
 
         # Convert query to objects of key-value pairs
         events_list = []

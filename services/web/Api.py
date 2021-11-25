@@ -15,6 +15,7 @@ logging.basicConfig(level=logging.DEBUG, format=FORMAT)
 
 # ROUTES
 GET_EVENTS = "/events"
+GET_EVENT_BY_ID = "/event"
 
 # API 
 @app.route("/")
@@ -30,7 +31,7 @@ def register(message=False):
         middleware.register(message)
     pass
 
-@app.route("/events", methods=['GET'])
+@app.route(GET_EVENTS, methods=['GET'])
 def getEvents():
 
     # 1. READ REQUEST
@@ -52,7 +53,20 @@ def getEvents():
 
     return Response("[BAD REQUEST] -90 <= lat <= 90 & -180 <= long <= 180.\nlong: " + str(long) + " lat: " + str(lat), status=400)
 
+@app.route(GET_EVENT_BY_ID, methods=['GET'])
+def getEventByID():
 
+    # 1. READ REQUEST
+    id = request.args.get('id', default=None, type=int)
+
+    # 2. CHECK CORRECTNESS OF REQUEST
+    if(id != None):
+        if(int(id) >= 0):
+            #3. FORWARD REQUEST TO MIDDLEWARE
+            return Response(middleware.getEventById(id), status=200)
+
+    return Response("[BAD REQUEST]", status=400)
+        
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='5005')

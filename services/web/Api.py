@@ -2,32 +2,26 @@ from flask import Flask
 from flask import request
 from flask import Response
 from flask.globals import request
+import logging
  
 from project.dbmysql.DbController import DbController
 from project.Middleware import Middleware
 
+# INIT
 app = Flask(__name__)
 middleware = Middleware()
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 
+# ROUTES
 GET_EVENTS = "/events"
 
+# API 
 @app.route("/")
 def hello_world():
     return "hello", 200
 
-@app.route(GET_EVENTS, methods=['GET'])
-def getEvents():
-    #check the correctness of req
-    long = request.args.get('long')
-    lat = request.args.get('lat')
-    
-    if(long != None and lat != None):
-        #call to middleware
-        return Response("events response test" + " long: " + long + " lat: " + lat, status = 200)   
-        #return Response(middleware.getEvents(long, lat), status=200)
-    return Response("bad request", status=400)
-
-
+# EXAMPLE
 @app.route("/register/<message>", methods=['GET'])
 def register(message=False):
     # check on correctness of request
@@ -36,9 +30,29 @@ def register(message=False):
         middleware.register(message)
     pass
 
-#@app.route("/register/<message>", methods=['POST'])
-#def register():
-#    pass
+@app.route(GET_EVENTS, methods=['GET'])
+def getEvents():
+
+    # 1. READ REQUEST
+    long = request.args.get('long', default=None, type=float)
+    lat = request.args.get('lat', default=None, type=float)
+    max_dist_km = request.args.get('max_dist_km', default=50, type=int)
+    
+    # 2. CHECK CORRECTNESS OF REQUEST 
+    # -90 <= lat <= 90
+    # -180 <= long <= 180
+    # max_dist_km > 0
+    logging.log(level=logging.INFO,
+     msg = "[API] received events request. \n long: " + str(long) + " lat: " + str(lat) + " max_dist_km: " + str(max_dist_km))
+
+    if(long != None and lat != None and max_dist_km != None):
+        if((lat <= 90 and lat >= -90) and (long <= 180 and long >= -180)):
+            #3. FORWARD REQUEST TO MIDDLEWARE
+            #return Response("events response test" + " long: " + str(long) + " lat: " + str(lat), status = 200)   
+            return Response(middleware.getEvents(long, lat, max_dist_km), status=200)
+
+    return Response("[BAD REQUEST] -90 <= lat <= 90 & -180 <= long <= 180.\nlong: " + str(long) + " lat: " + str(lat), status=400)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='5005')

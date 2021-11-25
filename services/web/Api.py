@@ -10,8 +10,8 @@ from project.Middleware import Middleware
 # INIT
 app = Flask(__name__)
 middleware = Middleware()
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+FORMAT = "%(asctime)s - %(levelname)-5s - %(threadName)-10s - %(name)-8s - %(module)13s:%(lineno)-3s - %(message)s"
+logging.basicConfig(level=logging.DEBUG, format=FORMAT)
 
 # ROUTES
 GET_EVENTS = "/events"
@@ -30,7 +30,7 @@ def register(message=False):
         middleware.register(message)
     pass
 
-@app.route(GET_EVENTS, methods=['GET'])
+@app.route("/events", methods=['GET'])
 def getEvents():
 
     # 1. READ REQUEST
@@ -42,8 +42,7 @@ def getEvents():
     # -90 <= lat <= 90
     # -180 <= long <= 180
     # max_dist_km > 0
-    logging.log(level=logging.INFO,
-     msg = "[API] received events request. \n long: " + str(long) + " lat: " + str(lat) + " max_dist_km: " + str(max_dist_km))
+    logging.info("[API] received events request. \n long: " + str(long) + " lat: " + str(lat) + " max_dist_km: " + str(max_dist_km))
 
     if(long != None and lat != None and max_dist_km != None):
         if((lat <= 90 and lat >= -90) and (long <= 180 and long >= -180)):
@@ -52,6 +51,7 @@ def getEvents():
             return Response(middleware.getEvents(long, lat, max_dist_km), status=200)
 
     return Response("[BAD REQUEST] -90 <= lat <= 90 & -180 <= long <= 180.\nlong: " + str(long) + " lat: " + str(lat), status=400)
+
 
 
 if __name__ == "__main__":

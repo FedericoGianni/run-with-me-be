@@ -87,8 +87,13 @@ class DbController():
             starting_point = (lat, long)
             rectangle = self.calc_rectangle(lat, long, max_dist_km)
             #TODO long e lat possono anche essere negative 
-            #query = select([self.__eventsTable]).where(and_(self.__eventsTable.c.starting_point_long <= rectangle.get('maxLon'), self.__eventsTable.c.starting_point_long >= rectangle.get('minLon'), self.__eventsTable.c.starting_point_lat <= rectangle.get('maxLat')), self.__eventsTable.c.starting_point_lat >= rectangle.get('minLat')) 
-            query = select([self.__eventsTable])
+            query = select([self.__eventsTable]).where(and_(
+                self.__eventsTable.c.starting_point_long <= rectangle.get('maxLon')
+                # self.__eventsTable.c.starting_point_long >= rectangle.get('minLon'), 
+                # self.__eventsTable.c.starting_point_long <= rectangle.get('maxLon'), 
+                # self.__eventsTable.c.starting_point_long <= rectangle.get('maxLon'), 
+            
+            ))
             result = __connection.execute(query).fetchall()
             result = self.__parser.event2Json(result)
         except Exception as e:

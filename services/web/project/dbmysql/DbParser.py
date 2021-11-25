@@ -27,7 +27,7 @@ class DbParser():
             events_list.append(d)
             
         j = json.dumps(events_list)
-        logging.log(level=logging.INFO, msg=j)
+        logging.info(j)
 
         return j
         

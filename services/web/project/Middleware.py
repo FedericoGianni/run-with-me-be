@@ -11,6 +11,6 @@ class Middleware():
         pass
 
     def getEvents(self, long, lat, max_dist_km):
-        logging.log(level=logging.INFO, msg="[MIDDLEWARE] long: " + str(long) + " lat: " + str(lat) + " max_dist_km: " + str(max_dist_km))
+        logging.info("long: " + str(long) + " lat: " + str(lat) + " max_dist_km: " + str(max_dist_km))
         events = self.dbController.getEvents(long, lat, max_dist_km)
         return events

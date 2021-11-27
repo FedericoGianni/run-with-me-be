@@ -1,6 +1,7 @@
 from flask.globals import request
 from sqlalchemy.sql.expression import *
 from sqlalchemy import create_engine, MetaData, Table, and_, true
+from sqlalchemy.orm import sessionmaker
 import logging
 from geopy import distance
 from geopy.distance import geodesic
@@ -22,6 +23,12 @@ class DbController():
         metadata = MetaData()
         self.__eventsTable = Table("events", metadata, autoload = True, autoload_with = self.__engine)
         self.__parser = DbParser()
+
+        #TODO verificare se servono per le transactions
+        # create a configured "Session" class
+        Session = sessionmaker(bind=self.__engine)
+         # create a Session
+        self.session = Session()
 
     # EXAMPLE
     # def geteventsUser(self):
@@ -117,7 +124,12 @@ class DbController():
         __connection.close()
         return result
 
-    def addEvent(self):
+    def addEvent(self, created_at, date, name, starting_point_long, starting_point_lat, difficulty_level, avg_pace_min, avg_pace_sec, avg_duration, avg_length, admin_id, current_participants, max_participants):
+        __connection = self.__engine.connect()
+
+        #with self.session.begin():
+            #self.session.add()
+
         #TODO
         return
 

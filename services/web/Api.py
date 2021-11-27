@@ -74,74 +74,104 @@ def getEventByID(event_id):
 def addEvent():
 
     # 1. CHECK PARAMETERS
-    #"id"
-    #"created_at"
     #"date"
+    #"name"
     #"starting_point_long"
     #"starting_point_lat"
-    #"difficulty_level"
-    #"avg_pace"
+    #"avg_pace_min" (optional, if not specified calculate it automatically)
+    #"avg_pace_sec"
     #"avg_duration"
     #"avg_length"
     #"admin_id"
-    #"current_participants"
+    #"current_participants" (1, since it's new)
     #"max_participants"
 
     # ID needs to be auto-generated inside backend 
     # CREATED AT -> middleware
     
     # DATE check if ok, then middleware will convert 
-    date = request.args.get('date', default=None, type=int)
+    date = request.form.get('date', default=None, type=int)
 
-    if(date == None or utils.checkTimeStamp(date)):
+    if(date == None):
+        logging.info("BAD REQUEST: date is None")
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    if(utils.checkTimeStamp(date) == False):
+        logging.info("BAD REQUEST: date format wrong")
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    # NAME
+    name = request.form.get('name', default=None, type=str)
+
+    if(name == None):
+        logging.info("BAD REQUEST: name is None")
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    if(utils.checkEventName(name) == False):
+        logging.info("BAD REQUEST: event name format wrong")
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400) 
+
 
     # STARTING POINT
-    starting_point_long = request.args.get('starting_point_long', default=None, type=float)
-    starting_point_lat = request.args.get('starting_point_lat', default=None, type=float)
+    starting_point_long = request.form.get('starting_point_long', default=None, type=float)
+    starting_point_lat = request.form.get('starting_point_lat', default=None, type=float)
 
-    if(starting_point_lat == None and starting_point_long == None):
+    if(starting_point_lat == None or starting_point_long == None):
+        logging.info("BAD REQUEST: lat and/or long is None")
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
-    if(utils.check_long(starting_point_long)==False or utils.check_lat(starting_point_lat)==False):
+    if(utils.checkLong(starting_point_long)==False or utils.checkLat(starting_point_lat)==False):
+        logging.info("BAD REQUEST: lat and/or long format is wrong")
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
     # AVG_DURATION
-    avg_duration = request.args.get('avg_duration', default=None, type=int)
+    avg_duration = request.form.get('avg_duration', default=None, type=int)
     if(avg_duration == None):
+        logging.info("BAD REQUEST: avg_duration is None")
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
-    if(utils.checkAvgDuration() == False):
+    if(utils.checkAvgDuration(avg_duration) == False):
+        logging.info("BAD REQUEST: avg_duration format is wrong")
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
     # AVG_LENGTH
-    avg_length = request.args.get('avg_duration', default=None, type=int)
+    avg_length = request.form.get('avg_length', default=None, type=int)
     if(avg_length == None):
+        logging.info("BAD REQUEST: avg_length is None")
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
-    if(utils.checkAvgLength() == False):
+    if(utils.checkAvgLength(avg_length) == False):
+        logging.info("BAD REQUEST: avg_length format is wrong")
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
     # AVG_PACE if not specified in the request, middleware calculates it
     # TODO se cambiamo formato in 2 int per min e sec qua va cambiato
-    avg_pace = request.args.get('avg_pace', default=None, type=float)
+    avg_pace_min = request.form.get('avg_pace_min', default=None, type=float)
+    avg_pace_sec = request.form.get('avg_pace_sec', default=None, type=float)
+    
+    if(avg_pace_min != None and avg_pace_sec != None):
+        if(utils.checkAvgPace(avg_pace_min, avg_pace_sec) == False):
+            logging.info("BAD REQUEST: avg_pace_min and/or avg_pace_sec is wrong")
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
-    # DIFFICULTY LEVEL calculated dinamically
+    # DIFFICULTY LEVEL calculated dinamically by middleware
     
     # ADMIN_ID
-    admin_id = request.args.get('admin_id', default=None, type=int)
+    admin_id = request.form.get('admin_id', default=None, type=int)
     if(admin_id == None):
+        logging.info("BAD REQUEST: admin_id is none")
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
     if(admin_id < 0):
+        logging.info("BAD REQUEST: admin_id format is wrong")
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
     # CURRENT_PARTICIPANTS 1 perchè lo sto creando io, middleware
     
     # MAX_PARTICIPANTS mi arriva dal frontend, magari controllo che sia entro un limite
-    max_participants = request.args.get('max_participants', default=None, type=int)
+    max_participants = request.form.get('max_participants', default=None, type=int)
     if(max_participants == None):
+        logging.info("BAD REQUEST: max_participants is None")
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
-    if(utils.checkMaxParticipants() == False):
+    if(utils.checkMaxParticipants(max_participants) == False):
+        logging.info("BAD REQUEST: max_participants format is wrong")
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
-    return Response(middleware.addEvent(date, starting_point_long, starting_point_lat, avg_duration, avg_length, avg_pace, admin_id, max_participants), status=200)
+    return Response(middleware.addEvent(date, name, starting_point_long, starting_point_lat, avg_duration, avg_length, avg_pace_min, avg_pace_sec, admin_id, max_participants), status=200)
         
 
 if __name__ == "__main__":

@@ -26,8 +26,16 @@ def checkAvgDuration(duration: int):
     # TODO
     return True;
 
+def checkEventName(event_name: str):
+    #TODO
+    return True;
+
 def checkAvgLength(length: int):
     # TODO
+    return True;
+
+def checkAvgPace(min: int, sec:int):
+    #TODO
     return True;
 
 def decimalToMinutes(distance, duration):

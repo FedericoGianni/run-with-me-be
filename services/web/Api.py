@@ -86,6 +86,18 @@ def addEvent():
     #"current_participants" (1, since it's new)
     #"max_participants"
 
+    event = {
+        "date": None,
+        "name": None,
+        "starting_point_long" : None,
+        "starting_point_lat": None,
+        "avg_pace_min" : None,
+        "avg_pace_sec" : None,
+        "avg_duration" : None,
+        "avg_length" : None,
+        "admin_id" : None,
+        "max_participants" : None
+    }
     # ID needs to be auto-generated inside backend 
     # CREATED AT -> middleware
     
@@ -171,7 +183,20 @@ def addEvent():
         logging.info("BAD REQUEST: max_participants format is wrong")
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
-    return Response(middleware.addEvent(date, name, starting_point_long, starting_point_lat, avg_duration, avg_length, avg_pace_min, avg_pace_sec, admin_id, max_participants), status=200)
+    event = {
+        "date": date,
+        "name": name,
+        "starting_point_long" : starting_point_long,
+        "starting_point_lat": starting_point_lat,
+        "avg_pace_min" : avg_pace_min,
+        "avg_pace_sec" : avg_pace_sec,
+        "avg_duration" : avg_duration,
+        "avg_length" : avg_length,
+        "admin_id" : admin_id,
+        "max_participants" : max_participants
+    }
+
+    return Response(middleware.addEvent(event), status=200)
         
 
 if __name__ == "__main__":

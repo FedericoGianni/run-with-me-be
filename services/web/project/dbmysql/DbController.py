@@ -1,7 +1,8 @@
+import datetime
 from flask.globals import request
 from sqlalchemy.sql.expression import *
 from sqlalchemy import create_engine, MetaData, Table, and_, true
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import query, sessionmaker
 import logging
 from geopy import distance
 from geopy.distance import geodesic
@@ -124,12 +125,22 @@ class DbController():
         __connection.close()
         return result
 
-    def addEvent(self, created_at, date, name, starting_point_long, starting_point_lat, difficulty_level, avg_pace_min, avg_pace_sec, avg_duration, avg_length, admin_id, current_participants, max_participants):
+    # TODO
+    def addEvent(self, event):
         __connection = self.__engine.connect()
 
-        #with self.session.begin():
-            #self.session.add()
+        try:
+            with self.session.begin():
+                # 1 aggiungere a events
+                # 2 aggiungere a bookings l'admin 
+                query = insert([self.__eventsTable]).values(name = event['name'])
+                result = __connection.execute(query)
+                self.session.commit()
+            # result = idEventoCreato   
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            result = None
+        __connection.close()
 
-        #TODO
-        return
+        return result
 

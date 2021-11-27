@@ -117,3 +117,7 @@ class DbController():
         __connection.close()
         return result
 
+    def addEvent(self):
+        #TODO
+        return
+

@@ -3,7 +3,7 @@ from flask import request
 from flask import Response
 from flask.globals import request
 import logging
-import datetime
+import datetime 
  
 from project.dbmysql.DbController import DbController
 from project.Middleware import Middleware
@@ -87,19 +87,14 @@ def addEvent():
     #"current_participants"
     #"max_participants"
 
-    # ID
-    id = request.args.get('id', default=None, type=int)
-    if(id == None):
-        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
-    if(id < 0):
-        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    # ID needs to be auto-generated inside backend 
+    # CREATED AT -> middleware
     
-    # CREATED AT #TODO GENERARLO DA QUI
-    # TODO DATE capire cosa arriva dal frontend
+    # DATE check if ok, then middleware will convert 
+    date = request.args.get('date', default=None, type=int)
 
-    # DATE
-    # TODO DATE capire cosa arriva dal frontend
-
+    if(date == None or utils.checkTimeStamp(date)):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
     # STARTING POINT
     starting_point_long = request.args.get('starting_point_long', default=None, type=float)
@@ -110,25 +105,43 @@ def addEvent():
     if(utils.check_long(starting_point_long)==False or utils.check_lat(starting_point_lat)==False):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
-    # DIFFICULTY LEVEL
-    difficulty_level = request.args.get('difficulty_level', default=None, type=float)
-    if(difficulty_level == None):
-        if(utils.checkDifficultyLevel == False):
-            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
-
     # AVG_DURATION
     avg_duration = request.args.get('avg_duration', default=None, type=int)
     if(avg_duration == None):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
-    # AVG_LENGTH
+    if(utils.checkAvgDuration() == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
-    # AVG_PACE calcolarmelo io dal backend
+    # AVG_LENGTH
+    avg_length = request.args.get('avg_duration', default=None, type=int)
+    if(avg_length == None):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    if(utils.checkAvgLength() == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    # AVG_PACE if not specified in the request, middleware calculates it
+    # TODO se cambiamo formato in 2 int per min e sec qua va cambiato
+    avg_pace = request.args.get('avg_pace', default=None, type=float)
+
+    # DIFFICULTY LEVEL calculated dinamically
     
     # ADMIN_ID
-    # CURRENT_PARTICIPANTS 1 perchè lo sto creando io
-    # MAX_PARTICIPANTS mi arriva dal frontend, magari controllo che sia entro un limite
+    admin_id = request.args.get('admin_id', default=None, type=int)
+    if(admin_id == None):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    if(admin_id < 0):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
-    return
+    # CURRENT_PARTICIPANTS 1 perchè lo sto creando io, middleware
+    
+    # MAX_PARTICIPANTS mi arriva dal frontend, magari controllo che sia entro un limite
+    max_participants = request.args.get('max_participants', default=None, type=int)
+    if(max_participants == None):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    if(utils.checkMaxParticipants() == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    return Response(middleware.addEvent(date, starting_point_long, starting_point_lat, avg_duration, avg_length, avg_pace, admin_id, max_participants), status=200)
         
 
 if __name__ == "__main__":

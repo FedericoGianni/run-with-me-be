@@ -19,10 +19,13 @@ DB_NAME = 'hello_flask_prod'
 
 class DbController():
 
+    session = None
+
     def __init__(self):
         self.__engine = create_engine(DB_TYPE+"://"+DB_USER+":"+DB_PASSWORD+"@"+DB_ADDRESS+"/"+DB_NAME, pool_pre_ping=True)
         metadata = MetaData()
         self.__eventsTable = Table("events", metadata, autoload = True, autoload_with = self.__engine)
+        self.__bookingsTable = Table("bookings", metadata, autoload = True, autoload_with = self.__engine)
         self.__parser = DbParser()
 
         #TODO verificare se servono per le transactions
@@ -86,7 +89,6 @@ class DbController():
         
         return result_dict
 
-
     def getEvents(self, lat, long, max_dist_km):
         # sqlalchemy query to db
         __connection = self.__engine.connect()
@@ -125,22 +127,35 @@ class DbController():
         __connection.close()
         return result
 
-    # TODO
+    # TODO return id of the newly generated event 
     def addEvent(self, event):
+        booking = {
+            "created_at": event['created_at'],
+            "user_id": event['admin_id'],
+            "event_id": 0,
+        }
         __connection = self.__engine.connect()
 
         try:
             with self.session.begin():
-                # 1 aggiungere a events
-                # 2 aggiungere a bookings l'admin 
-                query = insert([self.__eventsTable]).values(name = event['name'])
-                result = __connection.execute(query)
-                self.session.commit()
-            # result = idEventoCreato   
+                # TODO verificare se così fa una transaction o cosa
+                # 1 add new event to events
+                # 2 add admin_id to the bookings for that event 
+                
+                i = insert(self.__eventsTable)
+                i = i.values(event)
+                newEventId = self.session.execute(i).inserted_primary_key
+
+                booking['event_id'] = newEventId[0]
+                i = insert(self.__bookingsTable)
+                i = i.values(booking)
+                self.session.execute(i)
+            
         except Exception as e:
             logging.error("{message}.".format(message=e))
             result = None
         __connection.close()
 
-        return result
+        #should return auto-generated id of the new event
+        return self.__parser.eventId2Json(newEventId)
 

@@ -17,12 +17,13 @@ class DbParser():
         d["starting_point_long"] = row[3]
         d["starting_point_lat"] = row[4]
         d["difficulty_level"] = row[5]
-        d["avg_pace"] = row[6]
-        d["avg_duration"] = row[7]
-        d["avg_length"] = row[8]
-        d["admin_id"] = row[9]
-        d["current_participants"]  = row[10]
-        d["max_participants"] = row[11]
+        d["avg_pace_min"] = row[6]
+        d["avg_pace_sec"] = row[7]
+        d["avg_duration"] = row[8]
+        d["avg_length"] = row[9]
+        d["admin_id"] = row[10]
+        d["current_participants"]  = row[11]
+        d["max_participants"] = row[12]
         
         return d
 
@@ -46,4 +47,12 @@ class DbParser():
         logging.info(j)
 
         return j
+    
+    def eventId2Json(self, newEventId):
+
+        d = collections.OrderedDict()
+        d["id"] = newEventId[0]
+        j = json.dumps(d)
+        logging.info(j)
         
+        return j

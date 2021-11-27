@@ -17,9 +17,15 @@ FORMAT = "%(asctime)s - %(levelname)-5s - %(threadName)-10s - %(name)-8s - %(mod
 logging.basicConfig(level=logging.DEBUG, format=FORMAT)
 
 # ROUTES
+
+# EVENTS
 GET_EVENTS = "/events"
 GET_EVENT_BY_ID = "/event/<event_id>"
 ADD_EVENT = "/event/add"
+#TODO
+UPDATE_EVENT = "/event/update/<event_id>"
+DELETE_EVENT = "/event/delete/<event_id>"
+
 
 # API 
 @app.route("/")
@@ -73,32 +79,7 @@ def getEventByID(event_id):
 @app.route(ADD_EVENT, methods=['POST'])
 def addEvent():
 
-    # 1. CHECK PARAMETERS
-    #"date"
-    #"name"
-    #"starting_point_long"
-    #"starting_point_lat"
-    #"avg_pace_min" (optional, if not specified calculate it automatically)
-    #"avg_pace_sec"
-    #"avg_duration"
-    #"avg_length"
-    #"admin_id"
-    #"current_participants" (1, since it's new)
-    #"max_participants"
-
-    event = {
-        "date": None,
-        "name": None,
-        "starting_point_long" : None,
-        "starting_point_lat": None,
-        "avg_pace_min" : None,
-        "avg_pace_sec" : None,
-        "avg_duration" : None,
-        "avg_length" : None,
-        "admin_id" : None,
-        "max_participants" : None
-    }
-    # ID needs to be auto-generated inside backend 
+    # 1. CHECK PARAMETERS 
     # CREATED AT -> middleware
     
     # DATE check if ok, then middleware will convert 

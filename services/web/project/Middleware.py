@@ -12,6 +12,8 @@ class Middleware():
     def register(self, message):
         pass
 
+    # EVENTS 
+
     def getEvents(self, long, lat, max_dist_km):
         logging.info("long: " + str(long) + " lat: " + str(lat) + " max_dist_km: " + str(max_dist_km))
         events = self.dbController.getEvents(long, lat, max_dist_km)
@@ -74,8 +76,12 @@ class Middleware():
         
         #removing null parameters 
         updatedEvent = {k: v for k, v in updatedEvent.items() if v}
-        
         if(updatedEvent['date'] != None):
             updatedEvent['date'] = datetime.datetime.fromtimestamp(updatedEvent['date'])
 
         return self.dbController.updateEvent(event_id, updatedEvent)
+
+    # BOOKINGS
+
+    def getBookingsByEventId(self, event_id):
+        return self.dbController.getBookingsByEventId(event_id) 

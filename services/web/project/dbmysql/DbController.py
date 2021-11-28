@@ -182,6 +182,7 @@ class DbController():
         return self.__parser.eventId2Json(event_id)
         
     def updateEvent(self, event_id, updatedEvent):
+
         __connection = self.__engine.connect()
 
         try:
@@ -197,3 +198,19 @@ class DbController():
 
         #should return auto-generated id of the new event
         return self.__parser.eventId2Json(event_id)
+
+    def getBookingsByEventId(self, event_id):
+        # sqlalchemy query to db
+        __connection = self.__engine.connect()
+        try:
+            query = select([self.__bookingsTable]).where(self.__bookingsTable.c.event_id == event_id)
+            result = __connection.execute(query).fetchall()
+            result = self.__parser.bookings2Json(result)
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            #result = False, GenericDatabaseError(e)
+            result = None
+        __connection.close()
+        return result
+
+

@@ -24,9 +24,12 @@ logging.basicConfig(level=logging.DEBUG, format=FORMAT)
 GET_EVENTS = "/events"
 GET_EVENT_BY_ID = "/event/<event_id>"
 ADD_EVENT = "/event/add"
-#TODO
 UPDATE_EVENT = "/event/<event_id>"
 DELETE_EVENT = "/event/<event_id>"
+
+# BOOKINGS
+GET_BOOKINGS = "/bookings"
+ADD_BOOKING = "/booking/add"
 
 
 # API 
@@ -284,6 +287,17 @@ def updateEvent(event_id):
     }
     
     return Response(middleware.updateEvent(event_id, updatedEvent), status=200)
+
+@app.route(GET_BOOKINGS, methods=['GET'])
+def getBookingsByEventId():
+    event_id = request.args.get('event_id', default=None, type=int)
+
+    if(utils.checkId(event_id) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    return Response(middleware.getBookingsByEventId(event_id), status=200)
+
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='5005')

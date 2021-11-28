@@ -56,3 +56,24 @@ class DbParser():
         logging.info(j)
 
         return j
+
+    def booking2OrderedDict(self, row):
+        
+        # Convert query to objects of key-value pairs
+        d = collections.OrderedDict()
+        d["id"] = row[0]
+        d["created_at"] = row[1]
+        d["user_id"] = row[2]
+        d["event_id"] = row[3]
+        
+        return d
+
+    def bookings2Json(self, bookings):
+        bookings_list = []
+        for row in bookings:
+            bookings_list.append(self.booking2OrderedDict(row))
+
+        j = json.dumps(bookings_list)
+        logging.info(j)
+
+        return j

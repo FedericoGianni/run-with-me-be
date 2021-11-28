@@ -12,6 +12,13 @@ def checkLat(lat: float):
         return True;
     return False;
 
+def checkId(id: int):
+    if(id == None):
+        return False;
+    if(id < 0):
+        return False;
+    return True;
+
 # TODO don't need since difficulty level is calculated inside backend
 def checkDifficultyLevel(lvl: float):
     if(lvl < 0.0 or lvl > 5.0):
@@ -34,9 +41,18 @@ def checkAvgLength(length: int):
     # TODO
     return True;
 
-def checkAvgPace(min: int, sec:int):
-    #TODO
+def checkAvgPaceMin(min: int):
+    # TODO
     return True;
+
+def checkAvgPaceSec(sec : int):
+    # TODO
+    return True;
+
+def checkAvgPace(min: int, sec:int):
+    if(checkAvgPaceMin(min) and checkAvgPaceSec(sec)):
+        return True;
+    return False;
 
 def decimalToMinutes(distance, duration):
 

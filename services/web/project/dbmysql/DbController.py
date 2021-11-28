@@ -2,7 +2,7 @@ import datetime
 from flask.globals import request
 from sqlalchemy.orm.util import CascadeOptions
 from sqlalchemy.sql.expression import *
-from sqlalchemy import create_engine, MetaData, Table, and_, true
+from sqlalchemy import create_engine, MetaData, Table, and_, event, true
 from sqlalchemy.orm import query, sessionmaker
 import logging
 from geopy import distance
@@ -179,4 +179,21 @@ class DbController():
             logging.error("{message}.".format(message=e))
         __connection.close()
 
+        return self.__parser.eventId2Json(event_id)
+        
+    def updateEvent(self, event_id, updatedEvent):
+        __connection = self.__engine.connect()
+
+        try:
+            with self.session.begin():
+                i = update(self.__eventsTable)
+                i = i.values(updatedEvent)
+                self.session.execute(i)
+            
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            result = None
+        __connection.close()
+
+        #should return auto-generated id of the new event
         return self.__parser.eventId2Json(event_id)

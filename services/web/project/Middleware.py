@@ -69,3 +69,13 @@ class Middleware():
 
     def deleteEvent(self, event_id):
         return self.dbController.deleteEvent(event_id)
+
+    def updateEvent(self, event_id, updatedEvent):
+        
+        #removing null parameters 
+        updatedEvent = {k: v for k, v in updatedEvent.items() if v}
+        
+        if(updatedEvent['date'] != None):
+            updatedEvent['date'] = datetime.datetime.fromtimestamp(updatedEvent['date'])
+
+        return self.dbController.updateEvent(event_id, updatedEvent)

@@ -3,7 +3,9 @@ from flask import request
 from flask import Response
 from flask.globals import request
 import logging
-import datetime 
+import datetime
+
+from sqlalchemy import event 
  
 from project.dbmysql.DbController import DbController
 from project.Middleware import Middleware
@@ -69,10 +71,9 @@ def getEventByID(event_id):
     id = event_id
 
     # 2. CHECK CORRECTNESS OF REQUEST
-    if(id != None):
-        if(int(id) >= 0):
-            #3. FORWARD REQUEST TO MIDDLEWARE
-            return Response(middleware.getEventById(id), status=200)
+    if(utils.checkId(int(id)) == True):
+        #3. FORWARD REQUEST TO MIDDLEWARE
+        return Response(middleware.getEventById(id), status=200)
 
     return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
@@ -187,10 +188,102 @@ def deleteEvent(event_id):
 
     # 2. CHECK CORRECTNESS OF REQUEST
     if(id != None):
-        if(int(id) >= 0):
+        if(id >= 0):
             return Response(middleware.deleteEvent(id), status=200)
     
     return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+@app.route(UPDATE_EVENT, methods=['POST'])
+def updateEvent(event_id):
+
+    # NOTE: differently from addEvent, parameters can be None
+
+    # 1. CHECK PARAMETERS
+    if(utils.checkId(int(event_id)) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    # DATE
+    date = request.form.get('date', default=None, type=int)
+    if(date != None):
+        if(utils.checkTimeStamp(date) == False):
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)            
+    
+    # NAME
+    name = request.form.get('name', default=None, type=str)
+    if(name != None):
+        if(utils.checkEventName(name) == False):
+            logging.info("BAD REQUEST: event name format wrong")
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400) 
+
+    # STARTING POINT LONG
+    starting_point_long = request.form.get('starting_point_long', default=None, type=float)
+    if(starting_point_long != None):
+        if(utils.checkLat(starting_point_long) == False):
+            logging.info("BAD REQUEST: long format wrong")
+
+    # STARTING POINT LAT
+    starting_point_lat = request.form.get('starting_point_lat', default=None, type=float)
+    if(starting_point_lat != None):
+        if(utils.checkLat(starting_point_lat)==False):
+            logging.info("BAD REQUEST: lat format is wrong")
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)    
+    
+    # AVG PACE MIN
+    avg_pace_min = request.form.get('avg_pace_min', default=None, type=int)
+    if(avg_pace_min != None):
+        if(utils.checkAvgPaceMin(avg_pace_min) == False):
+            logging.info("BAD REQUEST: avg_pace_min format is wrong")
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    # AVG PACE SEC
+    avg_pace_sec = request.form.get('avg_pace_sec', default=None, type=int)
+    if(avg_pace_sec != None):
+        if(utils.checkAvgPaceSec(avg_pace_sec) == False):
+            logging.info("BAD REQUEST: avg_pace_sec format is wrong")
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    # AVG_DURATION
+    avg_duration = request.form.get('avg_duration', default=None, type=int)
+    if(avg_duration != None):
+        if(utils.checkAvgDuration(avg_duration) == False):
+            logging.info("BAD REQUEST: avg_duration format is wrong")
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    # AVG_LENGTH
+    avg_length = request.form.get('avg_length', default=None, type=int)
+    if(avg_length != None):
+        if(utils.checkAvgLength(avg_length) == False):
+            logging.info("BAD REQUEST: avg_length format is wrong")
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    
+    # ADMIN_ID
+    admin_id = request.form.get('admin_id', default=None, type=int)
+    if(admin_id != None):
+        if(admin_id < 0):
+            logging.info("BAD REQUEST: admin_id format is wrong")
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    
+    # MAX_PARTICIPANTS
+    max_participants = request.form.get('max_participants', default=None, type=int)
+    if(max_participants != None):
+        if(utils.checkMaxParticipants(max_participants) == False):
+            logging.info("BAD REQUEST: max_participants format is wrong")
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)    
+    
+    updatedEvent = {
+        "date": date,
+        "name": name,
+        "starting_point_long" : starting_point_long,
+        "starting_point_lat": starting_point_lat,
+        "avg_pace_min" : avg_pace_min,
+        "avg_pace_sec" : avg_pace_sec,
+        "avg_duration" : avg_duration,
+        "avg_length" : avg_length,
+        "admin_id" : admin_id,
+        "max_participants" : max_participants
+    }
+    
+    return Response(middleware.updateEvent(event_id, updatedEvent), status=200)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='5005')

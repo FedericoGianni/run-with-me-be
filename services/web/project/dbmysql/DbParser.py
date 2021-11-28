@@ -48,11 +48,11 @@ class DbParser():
 
         return j
     
-    def eventId2Json(self, newEventId):
+    def eventId2Json(self, eventId):
 
         d = collections.OrderedDict()
-        d["id"] = newEventId[0]
+        d["id"] = eventId
         j = json.dumps(d)
         logging.info(j)
-        
+
         return j

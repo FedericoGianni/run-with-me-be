@@ -67,5 +67,5 @@ class Middleware():
 
         return self.dbController.addEvent(newEvent)
 
-
-    
+    def deleteEvent(self, event_id):
+        return self.dbController.deleteEvent(event_id)

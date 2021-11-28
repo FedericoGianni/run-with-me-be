@@ -1,5 +1,6 @@
 import datetime
 from flask.globals import request
+from sqlalchemy.orm.util import CascadeOptions
 from sqlalchemy.sql.expression import *
 from sqlalchemy import create_engine, MetaData, Table, and_, true
 from sqlalchemy.orm import query, sessionmaker
@@ -127,7 +128,7 @@ class DbController():
         __connection.close()
         return result
 
-    # TODO return id of the newly generated event 
+    #TODO capire se fa una transaction cosi o no
     def addEvent(self, event):
         booking = {
             "created_at": event['created_at'],
@@ -144,9 +145,9 @@ class DbController():
                 
                 i = insert(self.__eventsTable)
                 i = i.values(event)
-                newEventId = self.session.execute(i).inserted_primary_key
+                newEventId = self.session.execute(i).inserted_primary_key[0]
 
-                booking['event_id'] = newEventId[0]
+                booking['event_id'] = newEventId
                 i = insert(self.__bookingsTable)
                 i = i.values(booking)
                 self.session.execute(i)
@@ -159,3 +160,23 @@ class DbController():
         #should return auto-generated id of the new event
         return self.__parser.eventId2Json(newEventId)
 
+    def deleteEvent(self, event_id):
+
+        __connection = self.__engine.connect()
+        
+        try:
+            with self.session.begin():
+                # TODO verificare se così fa una transaction o cosa
+                # 1 add new event to events
+                # 2 add admin_id to the bookings for that event 
+                b = delete(self.__bookingsTable).where(self.__bookingsTable.c.event_id == event_id)
+                self.session.execute(b)
+                
+                i = delete(self.__eventsTable).where(self.__eventsTable.c.id == event_id)
+                self.session.execute(i)
+            
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+        __connection.close()
+
+        return self.__parser.eventId2Json(event_id)

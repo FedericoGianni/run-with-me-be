@@ -23,8 +23,8 @@ GET_EVENTS = "/events"
 GET_EVENT_BY_ID = "/event/<event_id>"
 ADD_EVENT = "/event/add"
 #TODO
-UPDATE_EVENT = "/event/update/<event_id>"
-DELETE_EVENT = "/event/delete/<event_id>"
+UPDATE_EVENT = "/event/<event_id>"
+DELETE_EVENT = "/event/<event_id>"
 
 
 # API 
@@ -178,7 +178,19 @@ def addEvent():
     }
 
     return Response(middleware.addEvent(event), status=200)
-        
+
+@app.route(DELETE_EVENT, methods=['DELETE'])
+def deleteEvent(event_id):
+
+    # 1. READ REQUEST
+    id = int(event_id)
+
+    # 2. CHECK CORRECTNESS OF REQUEST
+    if(id != None):
+        if(int(id) >= 0):
+            return Response(middleware.deleteEvent(id), status=200)
+    
+    return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='5005')

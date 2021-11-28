@@ -88,3 +88,12 @@ class Middleware():
 
     def getBookingsByUserId(self, user_id):
         return self.dbController.getBookingsByUserId(user_id) 
+
+    def addBooking(self, user_id, event_id):
+        booking = {
+            "created_at": datetime.datetime.now(),
+            "user_id": user_id,
+            "event_id": event_id,
+        }
+
+        return self.dbController.addBooking(booking)

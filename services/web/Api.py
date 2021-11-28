@@ -31,6 +31,7 @@ DELETE_EVENT = "/event/<event_id>"
 GET_BOOKINGS_BY_EVENT_ID = "/bookings/event"
 GET_BOOKINGS_BY_USER_ID = "/bookings/user"
 ADD_BOOKING = "/booking/add"
+DELETE_BOOKING = "/booking"
 
 
 # API 
@@ -307,6 +308,18 @@ def getBookingsByUserId():
 
     return Response(middleware.getBookingsByUserId(user_id), status=200)
 
+@app.route(ADD_BOOKING, methods=['POST'])
+def addBooking():
+    
+    user_id = request.args.get('user_id', default=None, type=int)
+    if(utils.checkId(user_id) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    event_id = request.args.get('event_id', default=None, type=int)
+    if(utils.checkId(event_id) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    
+    return Response(middleware.addBooking(user_id, event_id), status=200)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='5005')

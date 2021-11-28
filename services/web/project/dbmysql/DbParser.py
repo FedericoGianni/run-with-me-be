@@ -77,3 +77,12 @@ class DbParser():
         logging.info(j)
 
         return j
+
+    def bookingId2Json(self, bookingId):
+
+        d = collections.OrderedDict()
+        d["id"] = bookingId
+        j = json.dumps(d)
+        logging.info(j)
+
+        return j

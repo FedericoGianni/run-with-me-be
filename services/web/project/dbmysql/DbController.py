@@ -227,3 +227,20 @@ class DbController():
         __connection.close()
         return result
 
+    def addBooking(self, booking):
+
+        __connection = self.__engine.connect()
+
+        try:
+            with self.session.begin():
+                i = insert(self.__bookingsTable)
+                i = i.values(booking)
+                newBookingId = self.session.execute(i).inserted_primary_key[0]
+            
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            return e
+        __connection.close()
+
+        #should return auto-generated id of the new event
+        return self.__parser.bookingId2Json(newBookingId)

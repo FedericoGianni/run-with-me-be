@@ -85,3 +85,6 @@ class Middleware():
 
     def getBookingsByEventId(self, event_id):
         return self.dbController.getBookingsByEventId(event_id) 
+
+    def getBookingsByUserId(self, user_id):
+        return self.dbController.getBookingsByUserId(user_id) 

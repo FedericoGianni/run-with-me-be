@@ -213,4 +213,17 @@ class DbController():
         __connection.close()
         return result
 
+    def getBookingsByUserId(self, user_id):
+        # sqlalchemy query to db
+        __connection = self.__engine.connect()
+        try:
+            query = select([self.__bookingsTable]).where(self.__bookingsTable.c.user_id == user_id)
+            result = __connection.execute(query).fetchall()
+            result = self.__parser.bookings2Json(result)
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            #result = False, GenericDatabaseError(e)
+            result = None
+        __connection.close()
+        return result
 

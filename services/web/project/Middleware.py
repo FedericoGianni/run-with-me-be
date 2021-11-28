@@ -97,3 +97,6 @@ class Middleware():
         }
 
         return self.dbController.addBooking(booking)
+
+    def delBooking(self, user_id, event_id):
+        return self.dbController.delBooking(user_id, event_id)

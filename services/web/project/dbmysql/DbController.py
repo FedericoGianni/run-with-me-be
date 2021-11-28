@@ -244,3 +244,23 @@ class DbController():
 
         #should return auto-generated id of the new event
         return self.__parser.bookingId2Json(newBookingId)
+        
+    def delBooking(self, user_id, event_id):
+        __connection = self.__engine.connect()
+        
+        try:
+            with self.session.begin():
+                # 1 delete booking from bookings
+                b = delete(self.__bookingsTable).where(and_(self.__bookingsTable.c.event_id == event_id, self.__bookingsTable.c.user_id == user_id))
+                self.session.execute(b)
+                
+                # TODO
+                # 2 if no more bookings, delete event? NOT SURE IF NEEDED 
+                #i = delete(self.__eventsTable).where(self.__eventsTable.c.id == event_id)
+                #self.session.execute(i)
+            
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+        __connection.close()
+
+        return self.__parser.eventId2Json(event_id)

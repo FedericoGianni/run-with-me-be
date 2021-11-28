@@ -321,6 +321,20 @@ def addBooking():
     
     return Response(middleware.addBooking(user_id, event_id), status=200)
 
+@app.route(DELETE_BOOKING, methods=['DELETE'])
+def delBooking():
+
+    user_id = request.form.get('user_id', default=None, type=int)
+    if(utils.checkId(user_id) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    event_id = request.form.get('event_id', default=None, type=int)
+    if(utils.checkId(event_id) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    
+    return Response(middleware.delBooking(user_id, event_id), status=200)
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='5005')
     DbController()

@@ -125,3 +125,6 @@ class Middleware():
         #removing null parameters 
         updatedUser = {k: v for k, v in updatedUser.items() if v}
         return self.dbController.updateUser(user_id, updatedUser)
+
+    def delUser(self, user_id):
+        return self.dbController.delUser(user_id)

@@ -317,3 +317,21 @@ class DbController():
 
         #should return auto-generated id of the new event
         return self.__parser.userId2Json(user_id)
+
+    def delUser(self, user_id):
+
+        # TODO CAPIRE PERCHè DOPO AVER FATTO GETUSERBBYID DI UNO ELIMINATO DA LIST INDEX OUT OF RANGE
+
+        __connection = self.__engine.connect()
+        
+        try:
+            with self.session.begin():
+                b = delete(self.__usersTable).where(self.__usersTable.c.id == user_id)
+                self.session.execute(b)
+
+            
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+        __connection.close()
+
+        return self.__parser.userId2Json(user_id)

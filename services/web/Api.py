@@ -474,6 +474,16 @@ def updateUser(user_id):
 
     return Response(middleware.updateUser(user_id, user), status=200)
 
+@app.route(DELETE_USER, methods=['DELETE'])
+def delUser(user_id):
+
+    if(user_id == None):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400) 
+    if(utils.checkId(user_id) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    
+    return Response(middleware.delUser(user_id), status=200)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='5005')

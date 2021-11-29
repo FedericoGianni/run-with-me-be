@@ -348,6 +348,75 @@ def getUserInfo(user_id):
 
     return Response(middleware.getUserInfo(user_id), status=200)
 
+@app.route(ADD_USER, methods=['POST'])
+def addUser():
+    # id -> dbparser
+    # name 
+    # surname 
+    # created_at -> middleware
+    # height int
+    # age int
+    # fitness_level float
+    # city
+
+    # 1. CHECK REQUEST
+
+    # NAME AND SURNAME
+    name = request.form.get('name', default=None, type=str)
+    surname = request.form.get('name', default=None, type=str)
+    
+    if(name == None or surname == None):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    if(utils.checkName(name) == False or utils.checkName(surname) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    
+    # HEIGHT
+    height = request.form.get('height', default=None, type=int)
+        
+    if(height == None):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    if(utils.checkHeight(height) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    # AGE
+    age = request.form.get('age', default=None, type=int)
+    
+    if(age == None):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    if(utils.checkAge(age) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    
+    # FITNESS LEVEL
+    fitness_level = request.form.get('fitness_level', default=None, type=float)
+    
+    if(fitness_level == None):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    if(utils.checkFitnessLevel(fitness_level) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    # CITY
+    city = request.form.get('city', default=None, type=str)
+    
+    if(city == None):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    if(utils.checkCity(city) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    
+    user = {
+        "name": name,
+        "surname": surname,
+        "height": height,
+        "age": age,
+        "fitness_level": fitness_level,
+        "city": city,
+    }
+
+    return Response(middleware.addUser(user), status=200)
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='5005')
     DbController()

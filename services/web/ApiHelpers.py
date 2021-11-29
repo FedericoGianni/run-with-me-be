@@ -128,3 +128,23 @@ def calculateDifficultyLevel(distance, duration):
 def checkMaxParticipants(max: int):
     # TODO 
     return True;
+
+def checkName(name: str):
+    # TODO
+    return True;
+
+def checkHeight(height: int):
+    # TODO
+    return True;
+
+def checkAge(age: int):
+    # TODO
+    return True;
+
+def checkFitnessLevel(lvl: float):
+    # TODO
+    return True;
+
+def checkCity(city: str):
+    # TODO
+    return True;

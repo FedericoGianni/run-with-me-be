@@ -280,3 +280,22 @@ class DbController():
             result = None
         __connection.close()
         return result
+
+    def addUser(self, user):
+
+        __connection = self.__engine.connect()
+
+        try:
+            with self.session.begin():
+
+                i = insert(self.__usersTable)
+                i = i.values(user)
+                newUserId = self.session.execute(i).inserted_primary_key[0]
+            
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            result = None
+        __connection.close()
+
+        #should return auto-generated id of the new event
+        return self.__parser.userId2Json(newUserId)

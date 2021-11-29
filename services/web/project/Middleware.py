@@ -106,3 +106,17 @@ class Middleware():
 
     def getUserInfo(self, user_id):
         return self.dbController.getUserInfo(user_id)
+
+    def addUser(self, user):
+
+        newUser = {
+            "name": user['name'],
+            "surname": user['surname'],
+            "created_at" : datetime.datetime.now(),
+            "height": user['height'],
+            "age": user['age'],
+            "fitness_level": user['fitness_level'],
+            "city": user['city'],
+        }
+
+        return self.dbController.addUser(newUser)

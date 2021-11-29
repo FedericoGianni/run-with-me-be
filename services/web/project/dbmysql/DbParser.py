@@ -114,3 +114,12 @@ class DbParser():
         
         logging.info(j)
         return j   
+
+    def userId2Json(self, userId):
+
+        d = collections.OrderedDict()
+        d["id"] = userId
+        j = json.dumps(d)
+        logging.info(j)
+
+        return j

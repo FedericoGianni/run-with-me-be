@@ -27,13 +27,12 @@ class DbParser():
         
         return d
 
-    def event2Json(self, events):
+    def event2Json(self, event):
         events_list = []
-        for row in events:
+        for row in event:
             events_list.append(self.event2OrderedDict(row))
 
         j = json.dumps(events_list[0])
-        logging.info(j)
         return j
 
     def events2Json(self, events):
@@ -56,6 +55,8 @@ class DbParser():
         logging.info(j)
 
         return j
+
+    # BOOKINGS
 
     def booking2OrderedDict(self, row):
         
@@ -86,3 +87,30 @@ class DbParser():
         logging.info(j)
 
         return j
+
+    # USERS
+
+    def user2OrderedDict(self, row):
+        
+        # Convert query to objects of key-value pairs
+        d = collections.OrderedDict()
+        d["id"] = row[0]
+        d["name"] = row[1]
+        d["surname"] = row[2]
+        d["height"] = row[3]
+        d["age"] = row[4]
+        d["fitness_level"] = row[5]
+        d["city"] = row[6]
+        
+        return d
+
+    def user2Json(self, user):
+
+        users_list = []
+        for row in user:
+            users_list.append(self.user2OrderedDict(row))
+
+        j = json.dumps(users_list[0])
+        
+        logging.info(j)
+        return j   

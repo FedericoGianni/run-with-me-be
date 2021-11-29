@@ -33,6 +33,12 @@ GET_BOOKINGS_BY_USER_ID = "/bookings/user"
 ADD_BOOKING = "/booking/add"
 DELETE_BOOKING = "/booking"
 
+# TODO USERS -> dipende anche da come gestiamo l'autenticazione
+# USERS
+GET_USER = "/user/<user_id>"
+ADD_USER = "/user/add"
+DELETE_USER = "/user/<user_id>"
+UPDATE_USER = "/user/<user_id>"
 
 # API 
 @app.route("/")
@@ -334,6 +340,13 @@ def delBooking():
     
     return Response(middleware.delBooking(user_id, event_id), status=200)
 
+@app.route(GET_USER, methods=['GET'])
+def getUserInfo(user_id):
+        
+    if(utils.checkId(user_id) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    return Response(middleware.getUserInfo(user_id), status=200)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='5005')

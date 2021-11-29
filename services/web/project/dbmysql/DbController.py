@@ -27,6 +27,7 @@ class DbController():
         metadata = MetaData()
         self.__eventsTable = Table("events", metadata, autoload = True, autoload_with = self.__engine)
         self.__bookingsTable = Table("bookings", metadata, autoload = True, autoload_with = self.__engine)
+        self.__usersTable = Table("users", metadata, autoload=True, autoload_with = self.__engine)
         self.__parser = DbParser()
 
         #TODO verificare se servono per le transactions
@@ -246,6 +247,7 @@ class DbController():
         return self.__parser.bookingId2Json(newBookingId)
         
     def delBooking(self, user_id, event_id):
+
         __connection = self.__engine.connect()
         
         try:
@@ -264,3 +266,17 @@ class DbController():
         __connection.close()
 
         return self.__parser.eventId2Json(event_id)
+
+    def getUserInfo(self, user_id):
+        # sqlalchemy query to db
+        __connection = self.__engine.connect()
+        try:
+            query = select([self.__usersTable]).where(self.__usersTable.c.id == user_id)
+            result = __connection.execute(query).fetchall()
+            result = self.__parser.user2Json(result)
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            #result = False, GenericDatabaseError(e)
+            result = None
+        __connection.close()
+        return result

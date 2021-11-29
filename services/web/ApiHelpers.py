@@ -15,7 +15,7 @@ def checkLat(lat: float):
 def checkId(id: int):
     if(id == None):
         return False;
-    if(id < 0):
+    if(int(id) < 0):
         return False;
     return True;
 

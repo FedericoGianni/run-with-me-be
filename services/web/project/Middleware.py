@@ -120,3 +120,8 @@ class Middleware():
         }
 
         return self.dbController.addUser(newUser)
+
+    def updateUser(self, user_id, updatedUser):
+        #removing null parameters 
+        updatedUser = {k: v for k, v in updatedUser.items() if v}
+        return self.dbController.updateUser(user_id, updatedUser)

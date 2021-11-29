@@ -416,6 +416,64 @@ def addUser():
 
     return Response(middleware.addUser(user), status=200)
 
+@app.route(UPDATE_USER, methods=['POST'])
+def updateUser(user_id):
+    # NOTE: differently from addUser, parameters can be None
+
+    # 1. CHECK REQUEST
+
+    # NAME AND SURNAME
+    name = request.form.get('name', default=None, type=str)
+    surname = request.form.get('surname', default=None, type=str)
+
+    if(name != None):
+        if(utils.checkName(name) == False):
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    
+    if(surname != None):
+        if(utils.checkName(surname) == False):
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    
+    # HEIGHT
+    height = request.form.get('height', default=None, type=int)
+        
+    if(height != None):
+        if(utils.checkHeight(height) == False):
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    # AGE
+    age = request.form.get('age', default=None, type=int)
+    
+    if(age != None):
+        if(utils.checkAge(age) == False):
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    
+    # FITNESS LEVEL
+    fitness_level = request.form.get('fitness_level', default=None, type=float)
+    
+    if(fitness_level != None):
+        if(utils.checkFitnessLevel(fitness_level) == False):
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    # CITY
+    city = request.form.get('city', default=None, type=str)
+    
+    if(city != None):
+        if(utils.checkCity(city) == False):
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    user = {
+        "name": name,
+        "surname": surname,
+        "height": height,
+        "age": age,
+        "fitness_level": fitness_level,
+        "city": city,
+    }
+
+    return Response(middleware.updateUser(user_id, user), status=200)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='5005')

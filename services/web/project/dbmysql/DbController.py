@@ -299,3 +299,21 @@ class DbController():
 
         #should return auto-generated id of the new event
         return self.__parser.userId2Json(newUserId)
+
+    def updateUser(self, user_id, updatedUser):
+
+        __connection = self.__engine.connect()
+
+        try:
+            with self.session.begin():
+                i = update(self.__usersTable).where(self.__usersTable.c.id == user_id)
+                i = i.values(updatedUser)
+                self.session.execute(i)
+            
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            result = None
+        __connection.close()
+
+        #should return auto-generated id of the new event
+        return self.__parser.userId2Json(user_id)

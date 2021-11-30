@@ -24,6 +24,14 @@ class Middleware():
         event = self.dbController.getEventById(id)
         return event
 
+    def getEventsByAdminId(self, admin_id):
+        logging.info("id: " + str(admin_id))
+        return self.dbController.getEventsByAdminId(admin_id)
+
+    def getEventsByUserId(self, user_id):
+        logging.info("id: " + str(user_id))
+        return self.dbController.getEventsByUserId(user_id)
+
     def addEvent(self, event):
         #   id int [pk, increment] // auto-increment
         #   created_at datetime MIDDLEWARE
@@ -127,4 +135,5 @@ class Middleware():
         return self.dbController.updateUser(user_id, updatedUser)
 
     def delUser(self, user_id):
-        return self.dbController.delUser(user_id)
+        return self.dbController.delUser(user_id
+        )

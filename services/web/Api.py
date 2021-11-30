@@ -22,6 +22,8 @@ logging.basicConfig(level=logging.DEBUG, format=FORMAT)
 
 # EVENTS
 GET_EVENTS = "/events"
+GET_EVENTS_BY_USER_ID = "/events/user/<user_id>"
+GET_EVENTS_BY_ADMIN_ID = "/events/admin/<admin_id>"
 GET_EVENT_BY_ID = "/event/<event_id>"
 ADD_EVENT = "/event/add"
 UPDATE_EVENT = "/event/<event_id>"
@@ -87,6 +89,22 @@ def getEventByID(event_id):
         return Response(middleware.getEventById(id), status=200)
 
     return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+@app.route(GET_EVENTS_BY_ADMIN_ID, methods=['GET'])
+def getEventsByAdminId(admin_id):
+            
+    if(utils.checkId(admin_id) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    return Response(middleware.getEventsByAdminId(admin_id), status=200)
+
+@app.route(GET_EVENTS_BY_USER_ID, methods=['GET'])
+def getEventsByUserId(user_id):
+            
+    if(utils.checkId(user_id) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    return Response(middleware.getEventsByUserId(user_id), status=200)
 
 @app.route(ADD_EVENT, methods=['POST'])
 def addEvent():

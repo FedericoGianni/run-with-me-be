@@ -129,6 +129,21 @@ class DbController():
         __connection.close()
         return result
 
+    def getEventsByUserId(self, user_id):
+        # sqlalchemy query to db
+        __connection = self.__engine.connect()
+        try:
+            query = select([self.__eventsTable]).join(self.__bookingsTable, self.__bookingsTable.c.event_id == self.__eventsTable.c.id)\
+                .where(self.__bookingsTable.c.user_id == user_id)
+            result = __connection.execute(query).fetchall()
+            result = self.__parser.events2Json(result)
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            #result = False, GenericDatabaseError(e)
+            result = None
+        __connection.close()
+        return result
+
     #TODO capire se fa una transaction cosi o no
     def addEvent(self, event):
         booking = {
@@ -320,7 +335,7 @@ class DbController():
 
     def delUser(self, user_id):
 
-        # TODO CAPIRE PERCHè DOPO AVER FATTO GETUSERBBYID DI UNO ELIMINATO DA LIST INDEX OUT OF RANGE
+        # TODO CAPIRE PERCHè DOPO AVER FATTO GETUSERBBYID DI UNO ELIMINATO DA LIST INDEX OUT OF RANGE\
 
         __connection = self.__engine.connect()
         

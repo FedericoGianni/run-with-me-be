@@ -144,6 +144,20 @@ class DbController():
         __connection.close()
         return result
 
+    def getEventsByAdminId(self, admin_id):
+        # sqlalchemy query to db
+        __connection = self.__engine.connect()
+        try:
+            query = select([self.__eventsTable]).where(self.__eventsTable.c.admin_id == admin_id)
+            result = __connection.execute(query).fetchall()
+            result = self.__parser.events2Json(result)
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            #result = False, GenericDatabaseError(e)
+            result = None
+        __connection.close()
+        return result
+
     #TODO capire se fa una transaction cosi o no
     def addEvent(self, event):
         booking = {

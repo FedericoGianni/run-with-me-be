@@ -47,15 +47,6 @@ UPDATE_USER = "/user/<user_id>"
 def hello_world():
     return "hello", 200
 
-# EXAMPLE
-@app.route("/register/<message>", methods=['GET'])
-def register(message=False):
-    # check on correctness of request
-    # call to middleware
-    if message:
-        middleware.register(message)
-    pass
-
 @app.route(GET_EVENTS, methods=['GET'])
 def getEvents():
 
@@ -73,7 +64,7 @@ def getEvents():
     if(long != None and lat != None and max_dist_km != None):
         if(utils.checkLat(lat) and utils.checkLong(long)):
             #3. FORWARD REQUEST TO MIDDLEWARE   
-            return Response(middleware.getEvents(long, lat, max_dist_km), status=200)
+            return Response(middleware.getEvents(long, lat, max_dist_km), status=200, mimetype='application/json')
     
     return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
@@ -86,7 +77,7 @@ def getEventByID(event_id):
     # 2. CHECK CORRECTNESS OF REQUEST
     if(utils.checkId(int(id)) == True):
         #3. FORWARD REQUEST TO MIDDLEWARE
-        return Response(middleware.getEventById(id), status=200)
+        return Response(middleware.getEventById(id), status=200, mimetype='application/json')
 
     return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
@@ -96,7 +87,7 @@ def getEventsByAdminId(admin_id):
     if(utils.checkId(admin_id) == False):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
-    return Response(middleware.getEventsByAdminId(admin_id), status=200)
+    return Response(middleware.getEventsByAdminId(admin_id), status=200, mimetype='application/json')
 
 @app.route(GET_EVENTS_BY_USER_ID, methods=['GET'])
 def getEventsByUserId(user_id):
@@ -104,7 +95,7 @@ def getEventsByUserId(user_id):
     if(utils.checkId(user_id) == False):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
-    return Response(middleware.getEventsByUserId(user_id), status=200)
+    return Response(middleware.getEventsByUserId(user_id), status=200, mimetype='application/json')
 
 @app.route(ADD_EVENT, methods=['POST'])
 def addEvent():
@@ -207,7 +198,7 @@ def addEvent():
         "max_participants" : max_participants
     }
 
-    return Response(middleware.addEvent(event), status=200)
+    return Response(middleware.addEvent(event), status=200, mimetype='application/json')
 
 @app.route(DELETE_EVENT, methods=['DELETE'])
 def deleteEvent(event_id):
@@ -218,7 +209,7 @@ def deleteEvent(event_id):
     # 2. CHECK CORRECTNESS OF REQUEST
     if(id != None):
         if(id >= 0):
-            return Response(middleware.deleteEvent(id), status=200)
+            return Response(middleware.deleteEvent(id), status=200, mimetype='application/json')
     
     return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
@@ -312,7 +303,7 @@ def updateEvent(event_id):
         "max_participants" : max_participants
     }
     
-    return Response(middleware.updateEvent(event_id, updatedEvent), status=200)
+    return Response(middleware.updateEvent(event_id, updatedEvent), status=200, mimetype='application/json')
 
 @app.route(GET_BOOKINGS_BY_EVENT_ID, methods=['GET'])
 def getBookingsByEventId():
@@ -321,7 +312,7 @@ def getBookingsByEventId():
     if(utils.checkId(event_id) == False):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
-    return Response(middleware.getBookingsByEventId(event_id), status=200)
+    return Response(middleware.getBookingsByEventId(event_id), status=200, mimetype='application/json')
 
 @app.route(GET_BOOKINGS_BY_USER_ID, methods=['GET'])
 def getBookingsByUserId():
@@ -330,7 +321,7 @@ def getBookingsByUserId():
     if(utils.checkId(user_id) == False):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
-    return Response(middleware.getBookingsByUserId(user_id), status=200)
+    return Response(middleware.getBookingsByUserId(user_id), status=200, mimetype='application/json')
 
 @app.route(ADD_BOOKING, methods=['POST'])
 def addBooking():
@@ -343,7 +334,7 @@ def addBooking():
     if(utils.checkId(event_id) == False):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
     
-    return Response(middleware.addBooking(user_id, event_id), status=200)
+    return Response(middleware.addBooking(user_id, event_id), status=200, mimetype='application/json')
 
 @app.route(DELETE_BOOKING, methods=['DELETE'])
 def delBooking():
@@ -356,7 +347,7 @@ def delBooking():
     if(utils.checkId(event_id) == False):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
     
-    return Response(middleware.delBooking(user_id, event_id), status=200)
+    return Response(middleware.delBooking(user_id, event_id), status=200, mimetype='application/json')
 
 @app.route(GET_USER, methods=['GET'])
 def getUserInfo(user_id):
@@ -364,7 +355,7 @@ def getUserInfo(user_id):
     if(utils.checkId(user_id) == False):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
-    return Response(middleware.getUserInfo(user_id), status=200)
+    return Response(middleware.getUserInfo(user_id), status=200, mimetype='application/json')
 
 @app.route(ADD_USER, methods=['POST'])
 def addUser():
@@ -432,7 +423,7 @@ def addUser():
         "city": city,
     }
 
-    return Response(middleware.addUser(user), status=200)
+    return Response(middleware.addUser(user), status=200, mimetype='application/json')
 
 @app.route(UPDATE_USER, methods=['POST'])
 def updateUser(user_id):
@@ -490,7 +481,7 @@ def updateUser(user_id):
         "city": city,
     }
 
-    return Response(middleware.updateUser(user_id, user), status=200)
+    return Response(middleware.updateUser(user_id, user), status=200, mimetype='application/json')
 
 @app.route(DELETE_USER, methods=['DELETE'])
 def delUser(user_id):
@@ -500,7 +491,7 @@ def delUser(user_id):
     if(utils.checkId(user_id) == False):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
     
-    return Response(middleware.delUser(user_id), status=200)
+    return Response(middleware.delUser(user_id), status=200, mimetype='application/json')
 
 
 if __name__ == "__main__":

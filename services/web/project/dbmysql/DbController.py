@@ -91,21 +91,30 @@ class DbController():
         
         return result_dict
 
-    def getEvents(self, lat, long, max_dist_km):
+    # TODO aggiungere alla risposta anche se l'utente è iscritto o no
+    def getEvents(self, long, lat, max_dist_km):
         # sqlalchemy query to db
         __connection = self.__engine.connect()
         try:
-            #TODO return only events within max_dist_km from starting point (rectangle)
-            starting_point = (lat, long)
-            rectangle = self.calc_rectangle(lat, long, max_dist_km)
-            #TODO long e lat possono anche essere negative 
-            query = select([self.__eventsTable]).where(and_(
-                self.__eventsTable.c.starting_point_long <= rectangle.get('maxLon')
+            
+            # TODO: to reduce the computations by the db we should first precompute a rectangle/circle 
+            # from starting point and then compute exact distance only for that rectangle
+            #
+            #query = select([self.__eventsTable]).where(and_(
+            #    self.__eventsTable.c.starting_point_long <= rectangle.get('maxLon')
                 # self.__eventsTable.c.starting_point_long >= rectangle.get('minLon'), 
                 # self.__eventsTable.c.starting_point_long <= rectangle.get('maxLon'), 
                 # self.__eventsTable.c.starting_point_long <= rectangle.get('maxLon'), 
             
-            ))
+            #))
+
+            query = select([self.__eventsTable]).where(6371 * func.ACOS(
+            func.COS(func.RADIANS(lat))
+            * func.COS(func.RADIANS(self.__eventsTable.c.starting_point_lat))
+            * func.COS(func.RADIANS(self.__eventsTable.c.starting_point_long) - func.RADIANS(long))
+            + func.SIN(func.RADIANS(lat))
+            * func.SIN(func.RADIANS(self.__eventsTable.c.starting_point_lat))) <= max_dist_km)
+
             result = __connection.execute(query).fetchall()
             result = self.__parser.events2Json(result)
         except Exception as e:

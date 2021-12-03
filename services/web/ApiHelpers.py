@@ -1,6 +1,8 @@
-# HELPERS
-
 from logging import log
+
+MAX_PARTICIPANTS_VALUE = 200
+
+# HELPERS
 
 def checkLong(long: float):
     if(long <= 180 and long >= -180):
@@ -81,70 +83,71 @@ def calculateDifficultyLevel(distance, duration):
     # 0-3 points assigned for pace
     if(min_per_km <= 4):
         if(sec_per_km <= 30):
-            level += 3;
+            level += 3
         elif(sec_per_km <= 45):
-            level += 2.75;
+            level += 2.75
         else:
-            level += 2.5;
+            level += 2.5
 
     elif(min_per_km <= 5):
         if(sec_per_km <= 15):
-            level += 2.25;
+            level += 2.25
         elif(sec_per_km <= 30):
-            level += 2;
+            level += 2
         elif(sec_per_km <= 45):
-            level += 1.75;
+            level += 1.75
         else:
             level += 1.5;
     
     elif(min_per_km <= 6):
         if(sec_per_km <= 30):
-            level += 1.25;
+            level += 1.25
         elif(sec_per_km <= 45):
-            level += 1;
+            level += 1
         else:
-            level += 0.5;
+            level += 0.5
 
     # 0-2 point assigned for distance
     if(distance >= 30):
-        level += 2;
+        level += 2
     elif(distance >= 20):
-        level += 1.75;
+        level += 1.75
     elif(distance >= 15):
-        level += 1.5;
+        level += 1.5
     elif(distance >= 10):
-        level += 1.25;
+        level += 1.25
     elif(distance >= 7.5):
-        return 1;
+        return 1
     elif(distance >= 5):
-        level += 0.75;
+        level += 0.75
     elif(distance >= 2.5):
-        level += 0.5;
+        level += 0.5
     elif(distance >= 1):
-        level += 0.25;
+        level += 0.25
 
     return level
 
 def checkMaxParticipants(max: int):
-    # TODO 
-    return True;
+    if(max > MAX_PARTICIPANTS_VALUE):
+        return False
+    return True
 
 def checkName(name: str):
     # TODO
-    return True;
+    return True
 
 def checkHeight(height: int):
     # TODO
-    return True;
+    return True
 
 def checkAge(age: int):
     # TODO
-    return True;
+    return True
 
 def checkFitnessLevel(lvl: float):
     # TODO
-    return True;
+    return True
 
 def checkCity(city: str):
     # TODO
-    return True;
+    return True

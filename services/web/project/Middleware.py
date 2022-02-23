@@ -1,5 +1,6 @@
 import logging
 import datetime 
+import bcrypt
 
 from project.dbmysql.DbController import DbController
 import ApiHelpers as utils
@@ -142,6 +143,8 @@ class Middleware():
 
     def register(self, username, password):
         # TODO aggiungere libreria per hash password
+        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        logging.info("generating hash from password...")
         return self.dbController.register(username, password)
 
     def login(self, username, password):

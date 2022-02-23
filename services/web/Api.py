@@ -531,7 +531,9 @@ def login():
 @app.route(REGISTER, methods=["POST"])
 def register():
     #TODO
-    return 
+    username = request.form.get('username', default=None, type=str)
+    password = request.form.get('password', default=None, type=str)
+    return Response(middleware.register(username, password), status=200, mimetype='application/json')
 
 #EXAMPLE OF PROTECTED ROUTE
 # Protect a route with jwt_required, which will kick out requests

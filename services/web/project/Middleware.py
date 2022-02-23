@@ -12,7 +12,7 @@ class Middleware():
     def register(self, message):
         pass
 
-    # EVENTS 
+# EVENTS 
 
     def getEvents(self, long, lat, max_dist_km):
         logging.info("long: " + str(long) + " lat: " + str(lat) + " max_dist_km: " + str(max_dist_km))
@@ -89,7 +89,7 @@ class Middleware():
 
         return self.dbController.updateEvent(event_id, updatedEvent)
 
-    # BOOKINGS
+# BOOKINGS
 
     def getBookingsByEventId(self, event_id):
         return self.dbController.getBookingsByEventId(event_id) 
@@ -110,7 +110,7 @@ class Middleware():
         return self.dbController.delBooking(user_id, event_id)
 
     
-    # USERS
+# USERS
 
     def getUserInfo(self, user_id):
         return self.dbController.getUserInfo(user_id)
@@ -137,3 +137,13 @@ class Middleware():
     def delUser(self, user_id):
         return self.dbController.delUser(user_id
         )
+
+# AUTH
+
+    def register(self, username, password):
+        # TODO aggiungere libreria per hash password
+        return self.dbController.register(username, password)
+
+    def login(self, username, password):
+        # TODO aggiungere libreria per hash password
+        return self.dbController.login(username, password)

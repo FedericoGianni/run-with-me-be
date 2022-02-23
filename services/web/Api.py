@@ -51,39 +51,18 @@ UPDATE_USER = "/user/<user_id>"
 
 #AUTH
 LOGIN = "/login"
+REGISTER = "/register"
 
-# Setup the Flask-JWT-Extended extension
+# FLASK-JWT EXTENDED CONFIG
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
 jwt = JWTManager(app)
-
-
-# Create a route to authenticate your users and return JWTs. The
-# create_access_token() function is used to actually generate the JWT.
-@app.route(LOGIN, methods=["POST"])
-def login():
-    username = request.form.get('username', default=None, type=str)
-    password = request.form.get('password', default=None, type=str)
-    if username != "test" or password != "test":
-        return jsonify({"msg": "Bad username or password"}), 401
-
-    access_token = create_access_token(identity=username)
-    return jsonify(access_token=access_token)
-
-#EXAMPLE OF PROTECTED ROUTE
-# Protect a route with jwt_required, which will kick out requests
-# without a valid JWT present.
-#@app.route("/protected", methods=["GET"])
-#@jwt_required()
-#def protected():
-    # Access the identity of the current user with get_jwt_identity
-#    current_user = get_jwt_identity()
-#    return jsonify(logged_in_as=current_user), 200
-
 
 # API 
 @app.route("/")
 def hello_world():
     return "hello", 200
+
+# EVENTS
 
 @app.route(GET_EVENTS, methods=['GET'])
 def getEvents():
@@ -343,6 +322,8 @@ def updateEvent(event_id):
     
     return Response(middleware.updateEvent(event_id, updatedEvent), status=200, mimetype='application/json')
 
+# BOOKINGS
+
 @app.route(GET_BOOKINGS_BY_EVENT_ID, methods=['GET'])
 def getBookingsByEventId():
     event_id = request.args.get('event_id', default=None, type=int)
@@ -386,6 +367,8 @@ def delBooking():
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
     
     return Response(middleware.delBooking(user_id, event_id), status=200, mimetype='application/json')
+
+# USERS
 
 @app.route(GET_USER, methods=['GET'])
 def getUserInfo(user_id):
@@ -530,6 +513,36 @@ def delUser(user_id):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
     
     return Response(middleware.delUser(user_id), status=200, mimetype='application/json')
+
+# AUTH 
+# Create a route to authenticate your users and return JWTs. The
+# create_access_token() function is used to actually generate the JWT.
+@app.route(LOGIN, methods=["POST"])
+def login():
+    username = request.form.get('username', default=None, type=str)
+    password = request.form.get('password', default=None, type=str)
+    #if username != "test" or password != "test":
+    #    return jsonify({"msg": "Bad username or password"}), 401
+
+    #access_token = create_access_token(identity=username)
+    #return jsonify(access_token=access_token)
+    return Response(middleware.login(username, password), status=200, mimetype='application/json')
+
+@app.route(REGISTER, methods=["POST"])
+def register():
+    #TODO
+    return 
+
+#EXAMPLE OF PROTECTED ROUTE
+# Protect a route with jwt_required, which will kick out requests
+# without a valid JWT present.
+#@app.route("/protected", methods=["GET"])
+#@jwt_required()
+#def protected():
+    # Access the identity of the current user with get_jwt_identity
+#    current_user = get_jwt_identity()
+#    return jsonify(logged_in_as=current_user), 200
+
 
 
 if __name__ == "__main__":

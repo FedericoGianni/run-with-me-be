@@ -9,9 +9,9 @@ from geopy import distance
 from geopy.distance import geodesic
 import geopy
 
-
 from project.dbmysql.DbParser import DbParser
 
+# ENV VARIABLES
 DB_TYPE = 'mysql+pymysql'
 DB_USER = 'hello_flask'
 DB_PASSWORD = 'hello_flask'
@@ -36,23 +36,7 @@ class DbController():
          # create a Session
         self.session = Session()
 
-    # EXAMPLE
-    # def geteventsUser(self):
-    #     """
-    #     A method that returns a list of complete device objects, queried from the database with a specific user permission
-    #     :return: the list of complete device object
-    #     """
-
-    #     __connection = self.__engine.connect()
-    #     try:
-    #         query = select([self.__eventsTable]).select_from().where(and_(self.__eventsTable.c.client_uuid == [0], self.__eventsTable.c.is_deleted == False))
-    #         result = __connection.execute(query).fetchall()
-    #         result = self.__event2Json(result)
-    #     except Exception as e:
-    #         logging.error("{message}.".format(message=e))
-    #         result = False, GenericDatabaseError(e)
-    #     __connection.close()
-    #     return result
+# EVENTS
 
     def calc_rectangle(self, long, lat, max_dist_km):
         result_dict = {
@@ -238,6 +222,8 @@ class DbController():
         #should return auto-generated id of the new event
         return self.__parser.eventId2Json(event_id)
 
+# BOOKINGS
+
     def getBookingsByEventId(self, event_id):
         # sqlalchemy query to db
         __connection = self.__engine.connect()
@@ -319,6 +305,8 @@ class DbController():
         __connection.close()
         return result
 
+# USERS
+
     def addUser(self, user):
 
         __connection = self.__engine.connect()
@@ -373,3 +361,13 @@ class DbController():
         __connection.close()
 
         return self.__parser.userId2Json(user_id)
+
+# AUTH
+
+    def register(self, username, password):
+        # TODO
+        return
+
+    def login(self, username, password):
+        # TODO 
+        return

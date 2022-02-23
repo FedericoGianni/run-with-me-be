@@ -8,6 +8,7 @@ import logging
 from geopy import distance
 from geopy.distance import geodesic
 import geopy
+import bcrypt
 
 from project.dbmysql.DbParser import DbParser
 
@@ -323,7 +324,7 @@ class DbController():
             result = None
         __connection.close()
 
-        #should return auto-generated id of the new event
+        #should return auto-generated id of the new user
         return self.__parser.userId2Json(newUserId)
 
     def updateUser(self, user_id, updatedUser):
@@ -364,10 +365,42 @@ class DbController():
 
 # AUTH
 
-    def register(self, username, password):
-        # TODO
-        return
+    def register(self, user):
+        __connection = self.__engine.connect()
+
+        try:
+            with self.session.begin():
+
+                i = insert(self.__usersTable)
+                i = i.values(user)
+                newUserId = self.session.execute(i).inserted_primary_key[0]
+            
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            result = None
+        __connection.close()
+
+        #should return auto-generated id of the new user
+        return self.__parser.userId2Json(newUserId)
+
 
     def login(self, username, password):
-        # TODO 
-        return
+        __connection = self.__engine.connect()
+
+        try:
+            query = select([self.__usersTable]).where(self.__usersTable.c.username == username)
+            result = __connection.execute(query).fetchall()
+            logging.info(result[0])
+            result = self.__parser.user2OrderedDict(result[0])
+
+            logging.info("checking password: " + str(password) + " =?= " + str(result["password"]))
+            if bcrypt.checkpw(password.encode('utf-8'), result["password"].encode('utf-8')):
+                return True
+            else:
+                return False
+
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            #result = False, GenericDatabaseError(e)
+            result = None
+

@@ -142,11 +142,16 @@ class Middleware():
 # AUTH
 
     def register(self, username, password):
-        # TODO aggiungere libreria per hash password
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         logging.info("generating hash from password...")
-        return self.dbController.register(username, password)
+
+        newUser = {
+            "username": username,
+            "password": hashed,
+        }
+
+        return self.dbController.register(newUser)
 
     def login(self, username, password):
-        # TODO aggiungere libreria per hash password
         return self.dbController.login(username, password)
+

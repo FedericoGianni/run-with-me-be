@@ -96,12 +96,15 @@ class DbParser():
         # Convert query to objects of key-value pairs
         d = collections.OrderedDict()
         d["id"] = row[0]
-        d["name"] = row[1]
-        d["surname"] = row[2]
-        d["height"] = row[3]
-        d["age"] = row[4]
-        d["fitness_level"] = row[5]
-        d["city"] = row[6]
+        d["username"] = row[1] 
+        d["password"] = row[2]
+        d["name"] = row[3]
+        d["surname"] = row[4]
+        d["created_at"] = row[5]
+        d["height"] = row[6]
+        d["age"] = row[7]
+        d["fitness_level"] = row[8]
+        d["city"] = row[9]
         
         return d
 

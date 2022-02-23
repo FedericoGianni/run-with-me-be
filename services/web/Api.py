@@ -521,12 +521,13 @@ def delUser(user_id):
 def login():
     username = request.form.get('username', default=None, type=str)
     password = request.form.get('password', default=None, type=str)
-    #if username != "test" or password != "test":
-    #    return jsonify({"msg": "Bad username or password"}), 401
 
-    #access_token = create_access_token(identity=username)
-    #return jsonify(access_token=access_token)
-    return Response(middleware.login(username, password), status=200, mimetype='application/json')
+    if(middleware.login(username, password)):
+        access_token = create_access_token(identity=username)
+        return jsonify(access_token=access_token), 200
+    else:
+        return jsonify({"msg": "Bad username or password"}), 401
+
 
 @app.route(REGISTER, methods=["POST"])
 def register():

@@ -292,6 +292,8 @@ class DbController():
 
         return self.__parser.eventId2Json(event_id)
 
+# USERS
+
     def getUserInfo(self, user_id):
         # sqlalchemy query to db
         __connection = self.__engine.connect()
@@ -306,7 +308,6 @@ class DbController():
         __connection.close()
         return result
 
-# USERS
 
     def addUser(self, user):
 
@@ -363,6 +364,20 @@ class DbController():
 
         return self.__parser.userId2Json(user_id)
 
+    def getUserIdFromUsername(self, username):
+        __connection = self.__engine.connect()
+        try:
+            query = select([self.__usersTable]).where(self.__usersTable.c.username == username)
+            result = __connection.execute(query).fetchall()
+            result = self.__parser.user2OrderedDict(result[0])
+            result = result["id"]
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            #result = False, GenericDatabaseError(e)
+            result = None
+        __connection.close()
+        return result
+
 # AUTH
 
     def register(self, user):
@@ -382,7 +397,6 @@ class DbController():
 
         #should return auto-generated id of the new user
         return self.__parser.userId2Json(newUserId)
-
 
     def login(self, username, password):
         __connection = self.__engine.connect()

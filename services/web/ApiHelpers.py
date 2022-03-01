@@ -151,3 +151,5 @@ def checkFitnessLevel(lvl: float):
 def checkCity(city: str):
     # TODO
     return True
+
+    

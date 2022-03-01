@@ -29,9 +29,11 @@ logging.basicConfig(level=logging.DEBUG, format=FORMAT)
 
 # EVENTS
 GET_EVENTS = "/events"
+GET_EVENTS_AUTH = "/events/auth"
+GET_EVENT_BY_ID = "/event/<event_id>"
+GET_EVENT_BY_ID_AUTH = "/event/auth/<event_id>"
 GET_EVENTS_BY_USER_ID = "/events/user/<user_id>"
 GET_EVENTS_BY_ADMIN_ID = "/events/admin/<admin_id>"
-GET_EVENT_BY_ID = "/event/<event_id>"
 ADD_EVENT = "/event/add"
 UPDATE_EVENT = "/event/<event_id>"
 DELETE_EVENT = "/event/<event_id>"
@@ -71,7 +73,31 @@ def getEvents():
     long = request.args.get('long', default=None, type=float)
     lat = request.args.get('lat', default=None, type=float)
     max_dist_km = request.args.get('max_dist_km', default=50, type=int)
+
+    # 2. CHECK CORRECTNESS OF REQUEST 
+    # -90 <= lat <= 90
+    # -180 <= long <= 180
+    # max_dist_km > 0
+    logging.info("[API] received events request. \n long: " + str(long) + " lat: " + str(lat) + " max_dist_km: " + str(max_dist_km))
+
+    if(long != None and lat != None and max_dist_km != None):
+        if(utils.checkLat(lat) and utils.checkLong(long)):
+            #3. FORWARD REQUEST TO MIDDLEWARE   
+            return Response(middleware.getEvents(long, lat, max_dist_km), status=200, mimetype='application/json')
     
+    return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+@app.route(GET_EVENTS_AUTH, methods=['GET'])
+@jwt_required()
+def getEventsAuth():
+
+    # 1. READ REQUEST
+    long = request.args.get('long', default=None, type=float)
+    lat = request.args.get('lat', default=None, type=float)
+    max_dist_km = request.args.get('max_dist_km', default=50, type=int)
+    user_id = get_jwt_identity()
+    logging.info("get_jwt_identity: " + str(get_jwt_identity()))
+
     # 2. CHECK CORRECTNESS OF REQUEST 
     # -90 <= lat <= 90
     # -180 <= long <= 180
@@ -98,7 +124,21 @@ def getEventByID(event_id):
 
     return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
+@app.route(GET_EVENT_BY_ID_AUTH, methods=['GET'])
+def getEventByIDAuth(event_id):
+
+    # 1. READ REQUEST
+    id = event_id
+
+    # 2. CHECK CORRECTNESS OF REQUEST
+    if(utils.checkId(int(id)) == True):
+        #3. FORWARD REQUEST TO MIDDLEWARE
+        return Response(middleware.getEventById(id), status=200, mimetype='application/json')
+
+    return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
 @app.route(GET_EVENTS_BY_ADMIN_ID, methods=['GET'])
+@jwt_required()
 def getEventsByAdminId(admin_id):
             
     if(utils.checkId(admin_id) == False):
@@ -107,6 +147,7 @@ def getEventsByAdminId(admin_id):
     return Response(middleware.getEventsByAdminId(admin_id), status=200, mimetype='application/json')
 
 @app.route(GET_EVENTS_BY_USER_ID, methods=['GET'])
+@jwt_required()
 def getEventsByUserId(user_id):
             
     if(utils.checkId(user_id) == False):
@@ -115,6 +156,7 @@ def getEventsByUserId(user_id):
     return Response(middleware.getEventsByUserId(user_id), status=200, mimetype='application/json')
 
 @app.route(ADD_EVENT, methods=['POST'])
+@jwt_required()
 def addEvent():
 
     # 1. CHECK PARAMETERS 
@@ -218,6 +260,7 @@ def addEvent():
     return Response(middleware.addEvent(event), status=200, mimetype='application/json')
 
 @app.route(DELETE_EVENT, methods=['DELETE'])
+@jwt_required()
 def deleteEvent(event_id):
 
     # 1. READ REQUEST
@@ -231,6 +274,7 @@ def deleteEvent(event_id):
     return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
 @app.route(UPDATE_EVENT, methods=['POST'])
+@jwt_required()
 def updateEvent(event_id):
 
     # NOTE: differently from addEvent, parameters can be None
@@ -325,6 +369,7 @@ def updateEvent(event_id):
 # BOOKINGS
 
 @app.route(GET_BOOKINGS_BY_EVENT_ID, methods=['GET'])
+@jwt_required()
 def getBookingsByEventId():
     event_id = request.args.get('event_id', default=None, type=int)
 
@@ -334,6 +379,7 @@ def getBookingsByEventId():
     return Response(middleware.getBookingsByEventId(event_id), status=200, mimetype='application/json')
 
 @app.route(GET_BOOKINGS_BY_USER_ID, methods=['GET'])
+@jwt_required()
 def getBookingsByUserId():
     user_id = request.args.get('user_id', default=None, type=int)
 
@@ -343,6 +389,7 @@ def getBookingsByUserId():
     return Response(middleware.getBookingsByUserId(user_id), status=200, mimetype='application/json')
 
 @app.route(ADD_BOOKING, methods=['POST'])
+@jwt_required()
 def addBooking():
     
     user_id = request.args.get('user_id', default=None, type=int)
@@ -356,6 +403,7 @@ def addBooking():
     return Response(middleware.addBooking(user_id, event_id), status=200, mimetype='application/json')
 
 @app.route(DELETE_BOOKING, methods=['DELETE'])
+@jwt_required()
 def delBooking():
 
     user_id = request.form.get('user_id', default=None, type=int)
@@ -371,6 +419,7 @@ def delBooking():
 # USERS
 
 @app.route(GET_USER, methods=['GET'])
+@jwt_required()
 def getUserInfo(user_id):
         
     if(utils.checkId(user_id) == False):
@@ -379,6 +428,7 @@ def getUserInfo(user_id):
     return Response(middleware.getUserInfo(user_id), status=200, mimetype='application/json')
 
 @app.route(ADD_USER, methods=['POST'])
+@jwt_required()
 def addUser():
     # id -> dbparser
     # name 
@@ -447,6 +497,7 @@ def addUser():
     return Response(middleware.addUser(user), status=200, mimetype='application/json')
 
 @app.route(UPDATE_USER, methods=['POST'])
+@jwt_required()
 def updateUser(user_id):
     # NOTE: differently from addUser, parameters can be None
 
@@ -505,6 +556,7 @@ def updateUser(user_id):
     return Response(middleware.updateUser(user_id, user), status=200, mimetype='application/json')
 
 @app.route(DELETE_USER, methods=['DELETE'])
+@jwt_required()
 def delUser(user_id):
 
     if(user_id == None):
@@ -523,7 +575,8 @@ def login():
     password = request.form.get('password', default=None, type=str)
 
     if(middleware.login(username, password)):
-        access_token = create_access_token(identity=username)
+        user_id = middleware.getUserIdFromUsername(username)
+        access_token = create_access_token(identity=user_id, expires_delta=datetime.timedelta(days=3))
         return jsonify(access_token=access_token), 200
     else:
         return jsonify({"msg": "Bad username or password"}), 401
@@ -535,17 +588,6 @@ def register():
     username = request.form.get('username', default=None, type=str)
     password = request.form.get('password', default=None, type=str)
     return Response(middleware.register(username, password), status=200, mimetype='application/json')
-
-#EXAMPLE OF PROTECTED ROUTE
-# Protect a route with jwt_required, which will kick out requests
-# without a valid JWT present.
-#@app.route("/protected", methods=["GET"])
-#@jwt_required()
-#def protected():
-    # Access the identity of the current user with get_jwt_identity
-#    current_user = get_jwt_identity()
-#    return jsonify(logged_in_as=current_user), 200
-
 
 
 if __name__ == "__main__":

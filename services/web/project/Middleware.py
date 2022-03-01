@@ -136,8 +136,10 @@ class Middleware():
         return self.dbController.updateUser(user_id, updatedUser)
 
     def delUser(self, user_id):
-        return self.dbController.delUser(user_id
-        )
+        return self.dbController.delUser(user_id)
+
+    def getUserIdFromUsername(self, username):
+        return self.dbController.getUserIdFromUsername(username)
 
 # AUTH
 

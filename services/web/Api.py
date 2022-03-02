@@ -107,7 +107,7 @@ def getEventsAuth():
     if(long != None and lat != None and max_dist_km != None):
         if(utils.checkLat(lat) and utils.checkLong(long)):
             #3. FORWARD REQUEST TO MIDDLEWARE   
-            return Response(middleware.getEvents(long, lat, max_dist_km), status=200, mimetype='application/json')
+            return Response(middleware.getEventsAuth(long, lat, max_dist_km, user_id), status=200, mimetype='application/json')
     
     return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
@@ -125,15 +125,17 @@ def getEventByID(event_id):
     return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
 @app.route(GET_EVENT_BY_ID_AUTH, methods=['GET'])
+@jwt_required()
 def getEventByIDAuth(event_id):
 
     # 1. READ REQUEST
     id = event_id
+    user_id = get_jwt_identity()
 
     # 2. CHECK CORRECTNESS OF REQUEST
     if(utils.checkId(int(id)) == True):
         #3. FORWARD REQUEST TO MIDDLEWARE
-        return Response(middleware.getEventById(id), status=200, mimetype='application/json')
+        return Response(middleware.getEventByIdAuth(id, user_id), status=200, mimetype='application/json')
 
     return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
@@ -576,6 +578,7 @@ def login():
 
     if(middleware.login(username, password)):
         user_id = middleware.getUserIdFromUsername(username)
+        logging.info("getting user_id from username: " + str(username) + "->" + str(user_id))
         access_token = create_access_token(identity=user_id, expires_delta=datetime.timedelta(days=3))
         return jsonify(access_token=access_token), 200
     else:

@@ -76,10 +76,10 @@ class DbController():
         
         return result_dict
 
-    # TODO aggiungere alla risposta anche se l'utente è iscritto o no
-    def getEvents(self, long, lat, max_dist_km):
+    def getEventsQuery(self, long, lat, max_dist_km):
         # sqlalchemy query to db
         __connection = self.__engine.connect()
+
         try:
             
             # TODO: to reduce the computations by the db we should first precompute a rectangle/circle 
@@ -101,7 +101,45 @@ class DbController():
             * func.SIN(func.RADIANS(self.__eventsTable.c.starting_point_lat))) <= max_dist_km)
 
             result = __connection.execute(query).fetchall()
-            result = self.__parser.events2Json(result)
+
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            #result = False, GenericDatabaseError(e)
+            result = None
+        
+        __connection.close()
+        return result
+
+    def getEvents(self, long, lat, max_dist_km):
+        result = self.getEventsQuery(long, lat, max_dist_km)
+        return self.__parser.events2Json(result)
+
+    def getEventsAuth(self, long, lat, max_dist_km, user_id):
+
+        events = self.getEventsQuery(long, lat, max_dist_km)
+        bookings = self.getBookingsByUserIdQuery(user_id)
+        
+        # convert query row results to dictionaries
+        events = self.__parser.events2OrderedDict(events)
+        bookings = self.__parser.bookings2OrderedDict(bookings)
+
+        # add user_booked = true/false to the event dictionary reply
+        for event in events:
+            for booking in bookings:
+                if(event["id"] == booking["event_id"]):
+                    logging.info("event: " + str(event["id"]) + " has been booked by user " + str(user_id))
+                    event["user_booked"] = True
+                else:
+                    logging.info("event: " + str(event["id"]) + " has NOT been booked by user " + str(user_id))
+                    event["user_booked"] = False
+        
+        return self.__parser.eventsDict2Json(events)
+
+    def getEventByIdQuery(self, id):
+        __connection = self.__engine.connect()
+        try:
+            query = select([self.__eventsTable]).where(self.__eventsTable.c.id == id)
+            result = __connection.execute(query).fetchall()
         except Exception as e:
             logging.error("{message}.".format(message=e))
             #result = False, GenericDatabaseError(e)
@@ -110,21 +148,28 @@ class DbController():
         return result
 
     def getEventById(self, id):
-        # sqlalchemy query to db
-        __connection = self.__engine.connect()
-        try:
-            query = select([self.__eventsTable]).where(self.__eventsTable.c.id == id)
-            result = __connection.execute(query).fetchall()
-            result = self.__parser.event2Json(result)
-        except Exception as e:
-            logging.error("{message}.".format(message=e))
-            #result = False, GenericDatabaseError(e)
-            result = None
-        __connection.close()
-        return result
+        return self.__parser.event2Json(self.getEventByIdQuery(id))
+
+    def getEventByIdAuth(self, id, user_id):
+
+        events = self.getEventByIdQuery(id)
+        events = self.__parser.events2OrderedDict(events)
+        event = events[0]
+        bookings = self.getBookingsByUserIdQuery(user_id)
+        bookings = self.__parser.bookings2OrderedDict(bookings)
+
+        for booking in bookings:
+            if(event["id"] == booking["event_id"]):
+                logging.info("event: " + str(event["id"]) + " has been booked by user " + str(user_id))
+                event["user_booked"] = True
+            else:
+                logging.info("event: " + str(event["id"]) + " has NOT been booked by user " + str(user_id))
+                event["user_booked"] = False
+        
+        return self.__parser.eventsDict2Json(event)
+
 
     def getEventsByUserId(self, user_id):
-        # sqlalchemy query to db
         __connection = self.__engine.connect()
         try:
             query = select([self.__eventsTable]).join(self.__bookingsTable, self.__bookingsTable.c.event_id == self.__eventsTable.c.id)\
@@ -139,7 +184,6 @@ class DbController():
         return result
 
     def getEventsByAdminId(self, admin_id):
-        # sqlalchemy query to db
         __connection = self.__engine.connect()
         try:
             query = select([self.__eventsTable]).where(self.__eventsTable.c.admin_id == admin_id)
@@ -225,13 +269,26 @@ class DbController():
 
 # BOOKINGS
 
-    def getBookingsByEventId(self, event_id):
-        # sqlalchemy query to db
+    def getBookingsByEventIdQuery(self, event_id):
         __connection = self.__engine.connect()
         try:
             query = select([self.__bookingsTable]).where(self.__bookingsTable.c.event_id == event_id)
             result = __connection.execute(query).fetchall()
-            result = self.__parser.bookings2Json(result)
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            #result = False, GenericDatabaseError(e)
+            result = None
+        __connection.close()
+        return result
+
+    def getBookingsByEventId(self, event_id):
+        return self.__parser.bookings2Json(self.getBookingsByEventIdQuery(event_id))
+
+    def getBookingsByUserIdQuery(self, user_id):
+        __connection = self.__engine.connect()
+        try:
+            query = select([self.__bookingsTable]).where(self.__bookingsTable.c.user_id == user_id)
+            result = __connection.execute(query).fetchall()
         except Exception as e:
             logging.error("{message}.".format(message=e))
             #result = False, GenericDatabaseError(e)
@@ -240,18 +297,7 @@ class DbController():
         return result
 
     def getBookingsByUserId(self, user_id):
-        # sqlalchemy query to db
-        __connection = self.__engine.connect()
-        try:
-            query = select([self.__bookingsTable]).where(self.__bookingsTable.c.user_id == user_id)
-            result = __connection.execute(query).fetchall()
-            result = self.__parser.bookings2Json(result)
-        except Exception as e:
-            logging.error("{message}.".format(message=e))
-            #result = False, GenericDatabaseError(e)
-            result = None
-        __connection.close()
-        return result
+        return self.__parser.bookings2Json(self.getBookingsByUserIdQuery(user_id))
 
     def addBooking(self, booking):
 
@@ -307,7 +353,6 @@ class DbController():
             result = None
         __connection.close()
         return result
-
 
     def addUser(self, user):
 

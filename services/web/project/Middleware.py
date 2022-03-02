@@ -20,9 +20,19 @@ class Middleware():
         events = self.dbController.getEvents(long, lat, max_dist_km)
         return events
 
+    def getEventsAuth(self, long, lat, max_dist_km, user_id):
+        logging.info("long: " + str(long) + " lat: " + str(lat) + " max_dist_km: " + str(max_dist_km))
+        events = self.dbController.getEventsAuth(long, lat, max_dist_km, user_id)
+        return events
+
     def getEventById(self, id):
         logging.info("id: " + str(id))
         event = self.dbController.getEventById(id)
+        return event
+
+    def getEventByIdAuth(self, id, user_id):
+        logging.info("id: " + str(id))
+        event = self.dbController.getEventByIdAuth(id, user_id)
         return event
 
     def getEventsByAdminId(self, admin_id):

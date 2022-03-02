@@ -33,7 +33,10 @@ class DbParser():
         for row in event:
             events_list.append(self.event2OrderedDict(row))
 
-        j = json.dumps(events_list[0])
+        if(not events_list):
+            j = None
+        else: 
+            j = json.dumps(events_list[0])
         return j
 
     def events2OrderedDict(self, events):

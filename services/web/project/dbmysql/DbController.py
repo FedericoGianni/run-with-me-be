@@ -125,13 +125,11 @@ class DbController():
 
         # add user_booked = true/false to the event dictionary reply
         for event in events:
+            event["user_booked"] = False
             for booking in bookings:
                 if(event["id"] == booking["event_id"]):
                     logging.info("event: " + str(event["id"]) + " has been booked by user " + str(user_id))
                     event["user_booked"] = True
-                else:
-                    logging.info("event: " + str(event["id"]) + " has NOT been booked by user " + str(user_id))
-                    event["user_booked"] = False
         
         return self.__parser.eventsDict2Json(events)
 
@@ -158,16 +156,15 @@ class DbController():
         bookings = self.getBookingsByUserIdQuery(user_id)
         bookings = self.__parser.bookings2OrderedDict(bookings)
 
+        event["user_booked"] = False
         for booking in bookings:
             if(event["id"] == booking["event_id"]):
                 logging.info("event: " + str(event["id"]) + " has been booked by user " + str(user_id))
                 event["user_booked"] = True
-            else:
-                logging.info("event: " + str(event["id"]) + " has NOT been booked by user " + str(user_id))
-                event["user_booked"] = False
+
+
         
         return self.__parser.eventsDict2Json(event)
-
 
     def getEventsByUserId(self, user_id):
         __connection = self.__engine.connect()

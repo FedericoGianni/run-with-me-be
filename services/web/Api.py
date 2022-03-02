@@ -569,6 +569,7 @@ def delUser(user_id):
     return Response(middleware.delUser(user_id), status=200, mimetype='application/json')
 
 # AUTH 
+
 # Create a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
 @app.route(LOGIN, methods=["POST"])
@@ -584,14 +585,12 @@ def login():
     else:
         return jsonify({"msg": "Bad username or password"}), 401
 
-
 @app.route(REGISTER, methods=["POST"])
 def register():
     #TODO
     username = request.form.get('username', default=None, type=str)
     password = request.form.get('password', default=None, type=str)
     return Response(middleware.register(username, password), status=200, mimetype='application/json')
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='5005')

@@ -422,14 +422,14 @@ class DbController():
 
 # AUTH
 
-    def register(self, user):
+    def register(self, newUser):
         __connection = self.__engine.connect()
 
         try:
             with self.session.begin():
 
                 i = insert(self.__usersTable)
-                i = i.values(user)
+                i = i.values(newUser)
                 newUserId = self.session.execute(i).inserted_primary_key[0]
             
         except Exception as e:
@@ -447,7 +447,7 @@ class DbController():
             query = select([self.__usersTable]).where(self.__usersTable.c.username == username)
             result = __connection.execute(query).fetchall()
             logging.info(result[0])
-            result = self.__parser.user2OrderedDict(result[0])
+            result = self.__parser.user2OrderedDictWithPass(result[0])
 
             logging.info("checking password: " + str(password) + " =?= " + str(result["password"]))
             if bcrypt.checkpw(password.encode('utf-8'), result["password"].encode('utf-8')):

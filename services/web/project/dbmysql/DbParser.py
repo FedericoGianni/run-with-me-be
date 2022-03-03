@@ -134,6 +134,23 @@ class DbParser():
         
         return d
 
+    def user2OrderedDictWithPass(self, row):
+        
+        # Convert query to objects of key-value pairs
+        d = collections.OrderedDict()
+        d["id"] = row[0]
+        d["username"] = row[1] 
+        d["password"] = row[2]
+        d["name"] = row[3]
+        d["surname"] = row[4]
+        d["created_at"] = row[5]
+        d["height"] = row[6]
+        d["age"] = row[7]
+        d["fitness_level"] = row[8]
+        d["city"] = row[9]
+        
+        return d
+
     def user2Json(self, user):
 
         users_list = []

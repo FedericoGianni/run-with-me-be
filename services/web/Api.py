@@ -46,7 +46,8 @@ DELETE_BOOKING = "/booking"
 
 # TODO USERS -> dipende anche da come gestiamo l'autenticazione
 # USERS
-GET_USER = "/user/<user_id>"
+GET_USER = "/user/id/<user_id>"
+GET_USER_BY_USERNAME = "/user/username/<username>"
 ADD_USER = "/user/add"
 DELETE_USER = "/user/<user_id>"
 UPDATE_USER = "/user/<user_id>"
@@ -428,6 +429,15 @@ def getUserInfo(user_id):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
     return Response(middleware.getUserInfo(user_id), status=200, mimetype='application/json')
+
+@app.route(GET_USER_BY_USERNAME, methods=['GET'])
+@jwt_required()
+def getUserInfoByUsername(username):
+        
+    if(utils.checkUsername(username) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    return Response(middleware.getUserInfoByUsername(username), status=200, mimetype='application/json')
 
 @app.route(ADD_USER, methods=['POST'])
 @jwt_required()

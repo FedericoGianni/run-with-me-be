@@ -126,6 +126,9 @@ class Middleware():
     def getUserInfo(self, user_id):
         return self.dbController.getUserInfo(user_id)
 
+    def getUserInfoByUsername(self, username):
+        return self.dbController.getUserInfoByUsername(username)
+
     def addUser(self, user):
 
         newUser = {

@@ -136,6 +136,10 @@ def checkName(name: str):
     # TODO
     return True
 
+def checkUsername(name: str):
+    # TODO
+    return True
+
 def checkHeight(height: int):
     # TODO
     return True

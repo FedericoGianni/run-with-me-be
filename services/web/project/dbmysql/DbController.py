@@ -351,6 +351,20 @@ class DbController():
         __connection.close()
         return result
 
+    def getUserInfoByUsername(self, username):
+        # sqlalchemy query to db
+        __connection = self.__engine.connect()
+        try:
+            query = select([self.__usersTable]).where(self.__usersTable.c.username == username)
+            result = __connection.execute(query).fetchall()
+            result = self.__parser.user2Json(result)
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            #result = False, GenericDatabaseError(e)
+            result = None
+        __connection.close()
+        return result
+
     def addUser(self, user):
 
         __connection = self.__engine.connect()

@@ -163,6 +163,7 @@ class Middleware():
         newUser = {
             "username": username,
             "password": hashed,
+            "created_at" : datetime.datetime.now(),
         }
 
         return self.dbController.register(newUser)

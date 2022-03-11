@@ -1,9 +1,12 @@
 import logging
 import datetime 
 import bcrypt
+from flask import json
+import collections
 
 from project.dbmysql.DbController import DbController
 import ApiHelpers as utils
+import ApiErrors as errors
 
 class Middleware():
     def __init__(self) -> None:
@@ -157,6 +160,14 @@ class Middleware():
 # AUTH
 
     def register(self, username, password):
+
+        # check if user does not already exist
+        if(self.dbController.checkUserExist(username)):
+            d = {"msg": errors.USER_ALREADY_EXISTS}
+            j = json.dumps(d)
+            return j
+
+
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         logging.info("generating hash from password...")
 

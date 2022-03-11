@@ -436,19 +436,34 @@ class DbController():
 
 # AUTH
 
+    def checkUserExist(self, username):
+
+        __connection = self.__engine.connect()
+
+        try:
+            with self.session.begin():
+                # check if username does not already exit
+                query = select([self.__usersTable]).where(self.__usersTable.c.username == username)
+                result = __connection.execute(query).fetchall()
+                if(result != None):
+                    #result = self.__parser.user2OrderedDict(result[0])
+                    #result = result["id"]
+                    return True
+            
+        except Exception as e:
+            logging.error("{message}.".format(message=e))
+            result = None
+        __connection.close()
+
+        return False
+
+
+
     def register(self, newUser):
         __connection = self.__engine.connect()
 
         try:
             with self.session.begin():
-                
-                # check if username does not already exit
-                query = select([self.__usersTable]).where(self.__usersTable.c.username == newUser["username"])
-                result = __connection.execute(query).fetchall()
-                if(result != None):
-                    result = self.__parser.user2OrderedDict(result[0])
-                    result = result["id"]
-                    return 
 
                 i = insert(self.__usersTable)
                 i = i.values(newUser)

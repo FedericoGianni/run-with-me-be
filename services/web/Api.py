@@ -591,7 +591,7 @@ def login():
         user_id = middleware.getUserIdFromUsername(username)
         logging.info("getting user_id from username: " + str(username) + "->" + str(user_id))
         access_token = create_access_token(identity=user_id, expires_delta=datetime.timedelta(days=3))
-        return jsonify(access_token=access_token), 200
+        return jsonify(access_token=access_token, user_id=user_id), 200
     else:
         return jsonify({"msg": "Bad username or password"}), 401
 

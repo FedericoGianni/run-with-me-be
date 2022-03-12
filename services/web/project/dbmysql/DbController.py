@@ -445,7 +445,7 @@ class DbController():
                 # check if username does not already exit
                 query = select([self.__usersTable]).where(self.__usersTable.c.username == username)
                 result = __connection.execute(query).fetchall()
-                if(result != None):
+                if(result[0] != None):
                     #result = self.__parser.user2OrderedDict(result[0])
                     #result = result["id"]
                     return True

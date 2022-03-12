@@ -1,20 +1,24 @@
 import logging
 import collections
 from flask import json
+import datetime
 
 class DbParser():
     def __init__(self) -> None:
         pass
     
+    
+    def dateStringToTimeStamp(self, date):
+        return date.timestamp()
 
     def event2OrderedDict(self, row):
         
         # Convert query to objects of key-value pairs
         d = collections.OrderedDict()
         d["id"] = row[0]
-        d["created_at"] = row[1]
+        d["created_at"] = self.dateStringToTimeStamp(row[1])
         d["name"] = row[2]
-        d["date"] = row[3]
+        d["date"] = self.dateStringToTimeStamp(row[3])
         d["starting_point_long"] = row[4]
         d["starting_point_lat"] = row[5]
         d["difficulty_level"] = row[6]
@@ -82,7 +86,7 @@ class DbParser():
         # Convert query to objects of key-value pairs
         d = collections.OrderedDict()
         d["id"] = row[0]
-        d["created_at"] = row[1]
+        d["created_at"] = self.dateStringToTimeStamp(row[1])
         d["user_id"] = row[2]
         d["event_id"] = row[3]
         
@@ -126,7 +130,7 @@ class DbParser():
         #d["password"] = row[2]
         d["name"] = row[3]
         d["surname"] = row[4]
-        d["created_at"] = row[5]
+        d["created_at"] = self.dateStringToTimeStamp(row[5])
         d["height"] = row[6]
         d["age"] = row[7]
         d["fitness_level"] = row[8]
@@ -143,7 +147,7 @@ class DbParser():
         d["password"] = row[2]
         d["name"] = row[3]
         d["surname"] = row[4]
-        d["created_at"] = row[5]
+        d["created_at"] = self.dateStringToTimeStamp(row[5])
         d["height"] = row[6]
         d["age"] = row[7]
         d["fitness_level"] = row[8]

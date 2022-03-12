@@ -535,7 +535,19 @@ def updateUser(user_id):
     if(surname != None):
         if(utils.checkName(surname) == False):
             return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
-    
+
+    # USERNAME
+    username = request.form.get('username', default=None, type=str)
+    if(username != None):
+        if(utils.checkUsername(username) == False):
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    # EMAIL
+    email = request.form.get('email', default=None, type=str)
+    if(email != None):
+        if(utils.checkEmail(email) == False):
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
     # HEIGHT
     height = request.form.get('height', default=None, type=int)
         
@@ -552,7 +564,7 @@ def updateUser(user_id):
 
     
     # SEX
-    sex = request.form.get('age', default=None, type=int)
+    sex = request.form.get('sex', default=None, type=int)
 
     if(sex != None):
         if(utils.checkSex(sex) == False):
@@ -574,6 +586,8 @@ def updateUser(user_id):
             return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
     user = {
+        "username": username,
+        "email": email,
         "name": name,
         "surname": surname,
         "height": height,

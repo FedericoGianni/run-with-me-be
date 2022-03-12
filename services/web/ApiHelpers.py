@@ -160,4 +160,8 @@ def checkCity(city: str):
     # TODO
     return True
 
+def checkEmail(email: str):
+    # TODO
+    return True
+
     

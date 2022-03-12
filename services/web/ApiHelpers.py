@@ -148,6 +148,10 @@ def checkAge(age: int):
     # TODO
     return True
 
+def checkSex(sex: int):
+    # TODO
+    return True
+
 def checkFitnessLevel(lvl: float):
     # TODO
     return True

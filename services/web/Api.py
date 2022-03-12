@@ -479,6 +479,14 @@ def addUser():
     if(utils.checkAge(age) == False):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
+    # SEX
+    sex = request.form.get('age', default=None, type=int)
+
+    if(sex == None):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    if(utils.checkSex(sex) == False):
+        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
     
     # FITNESS LEVEL
     fitness_level = request.form.get('fitness_level', default=None, type=float)
@@ -502,6 +510,7 @@ def addUser():
         "surname": surname,
         "height": height,
         "age": age,
+        "sex": sex,
         "fitness_level": fitness_level,
         "city": city,
     }
@@ -542,6 +551,14 @@ def updateUser(user_id):
             return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
     
+    # SEX
+    sex = request.form.get('age', default=None, type=int)
+
+    if(sex != None):
+        if(utils.checkSex(sex) == False):
+            return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    
     # FITNESS LEVEL
     fitness_level = request.form.get('fitness_level', default=None, type=float)
     
@@ -561,6 +578,7 @@ def updateUser(user_id):
         "surname": surname,
         "height": height,
         "age": age,
+        "sex": sex,
         "fitness_level": fitness_level,
         "city": city,
     }
@@ -597,10 +615,12 @@ def login():
 
 @app.route(REGISTER, methods=["POST"])
 def register():
-    #TODO
+
     username = request.form.get('username', default=None, type=str)
     password = request.form.get('password', default=None, type=str)
-    return Response(middleware.register(username, password), status=200, mimetype='application/json')
+    email = request.form.get('email', default=None, type=str)
+
+    return Response(middleware.register(username, password, email), status=200, mimetype='application/json')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='5005')

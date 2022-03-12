@@ -128,13 +128,15 @@ class DbParser():
         d["username"] = row[1] 
         #don't need to return password for user infos
         #d["password"] = row[2]
-        d["name"] = row[3]
-        d["surname"] = row[4]
-        d["created_at"] = self.dateStringToTimeStamp(row[5])
-        d["height"] = row[6]
-        d["age"] = row[7]
-        d["fitness_level"] = row[8]
-        d["city"] = row[9]
+        d["email"] = row[3]
+        d["name"] = row[4]
+        d["surname"] = row[5]
+        d["created_at"] = self.dateStringToTimeStamp(row[6])
+        d["height"] = row[7]
+        d["age"] = row[8]
+        d["sex"] = row[9]
+        d["fitness_level"] = row[10]
+        d["city"] = row[11]
         
         return d
 
@@ -145,13 +147,15 @@ class DbParser():
         d["id"] = row[0]
         d["username"] = row[1] 
         d["password"] = row[2]
-        d["name"] = row[3]
-        d["surname"] = row[4]
-        d["created_at"] = self.dateStringToTimeStamp(row[5])
-        d["height"] = row[6]
-        d["age"] = row[7]
-        d["fitness_level"] = row[8]
-        d["city"] = row[9]
+        d["email"] = row[3]
+        d["name"] = row[4]
+        d["surname"] = row[5]
+        d["created_at"] = self.dateStringToTimeStamp(row[6])
+        d["height"] = row[7]
+        d["age"] = row[8]
+        d["sex"] = row[9]
+        d["fitness_level"] = row[10]
+        d["city"] = row[11]
         
         return d
 

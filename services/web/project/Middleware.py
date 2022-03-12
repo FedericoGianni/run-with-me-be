@@ -140,6 +140,7 @@ class Middleware():
             "created_at" : datetime.datetime.now(),
             "height": user['height'],
             "age": user['age'],
+            "sex": user['sex'],
             "fitness_level": user['fitness_level'],
             "city": user['city'],
         }
@@ -159,7 +160,7 @@ class Middleware():
 
 # AUTH
 
-    def register(self, username, password):
+    def register(self, username, password, email):
 
         # check if user does not already exist
         if(self.dbController.checkUserExist(username)):
@@ -174,6 +175,7 @@ class Middleware():
         newUser = {
             "username": username,
             "password": hashed,
+            "email": email,
             "created_at" : datetime.datetime.now(),
         }
 

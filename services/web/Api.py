@@ -228,13 +228,16 @@ def addEvent():
     # DIFFICULTY LEVEL calculated dinamically by middleware
     
     # ADMIN_ID
-    admin_id = request.form.get('admin_id', default=None, type=int)
-    if(admin_id == None):
-        logging.info("BAD REQUEST: admin_id is none")
-        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
-    if(admin_id < 0):
-        logging.info("BAD REQUEST: admin_id format is wrong")
-        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    # get it automatically form JWT of the requirer
+    admin_id = get_jwt_identity()
+
+    # admin_id = request.form.get('admin_id', default=None, type=int)
+    # if(admin_id == None):
+    #     logging.info("BAD REQUEST: admin_id is none")
+    #     return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    # if(admin_id < 0):
+    #     logging.info("BAD REQUEST: admin_id format is wrong")
+    #     return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
 
     # CURRENT_PARTICIPANTS 1 perchè lo sto creando io, middleware
     

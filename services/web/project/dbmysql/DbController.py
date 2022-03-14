@@ -297,7 +297,8 @@ class DbController():
         return self.__parser.bookings2Json(self.getBookingsByUserIdQuery(user_id))
 
     def addBooking(self, booking):
-
+        
+        newBookingId = -1
         __connection = self.__engine.connect()
 
         try:
@@ -367,6 +368,7 @@ class DbController():
 
     def addUser(self, user):
 
+        newUserId = -1
         __connection = self.__engine.connect()
 
         try:
@@ -460,6 +462,8 @@ class DbController():
 
 
     def register(self, newUser):
+
+        newUserId = -1
         __connection = self.__engine.connect()
 
         try:

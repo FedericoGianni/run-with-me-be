@@ -4,12 +4,14 @@ MAX_PARTICIPANTS_VALUE = 200
 
 # HELPERS
 
-def checkLong(long: float):
+def checkLong(long: str):
+    long = float(long)
     if(long <= 180 and long >= -180):
         return True;
     return False;
 
-def checkLat(lat: float):
+def checkLat(lat: str):
+    lat = float(lat)
     if(lat <= 90 and lat >= -90):
         return True;
     return False;

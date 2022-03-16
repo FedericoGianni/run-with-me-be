@@ -187,8 +187,8 @@ def addEvent():
 
 
     # STARTING POINT
-    starting_point_long = request.form.get('starting_point_long', default=None, type=float)
-    starting_point_lat = request.form.get('starting_point_lat', default=None, type=float)
+    starting_point_long = request.form.get('starting_point_long', default=None, type=str)
+    starting_point_lat = request.form.get('starting_point_lat', default=None, type=str)
 
     if(starting_point_lat == None or starting_point_long == None):
         logging.info("BAD REQUEST: lat and/or long is None")

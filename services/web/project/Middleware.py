@@ -68,6 +68,8 @@ class Middleware():
 
         if(event['avg_pace_min'] == None or event['avg_pace_sec'] == None):
             avg_pace = utils.calculateAvgPace(event['avg_length'], event['avg_duration'])
+            event['avg_pace_min'] = avg_pace['minutes_per_km']
+            event['avg_pace_sec'] = avg_pace['seconds_remainder']
 
         difficulty_level = utils.calculateDifficultyLevel(event['avg_length'], event['avg_duration'])
 

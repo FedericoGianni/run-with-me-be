@@ -471,10 +471,7 @@ class DbController():
                 if(not result):
                     if(result[0] != None):
                         return True
-                        #result = self.__parser.user2OrderedDict(result[0])
-                        #result = result["id"]
-
-            
+                                    
         except Exception as e:
             logging.error("{message}.".format(message=e))
             result = None

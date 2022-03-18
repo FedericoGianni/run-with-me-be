@@ -466,11 +466,13 @@ class DbController():
                 # check if username does not already exit
                 query = select([self.__usersTable]).where(self.__usersTable.c.username == username)
                 result = __connection.execute(query).fetchall()
+
+                logging.info("checkUserExist: " + str(result))
                 
                 # check if list not empty
                 if(not result):
-                    #if(result[0] != None):
-                    return True
+                    if(result[0] != None):
+                        return True
                                     
         except Exception as e:
             logging.error("{message}.".format(message=e))

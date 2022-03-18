@@ -313,6 +313,9 @@ class DbController():
                     i = insert(self.__bookingsTable)
                     i = i.values(booking)
                     newBookingId = self.session.execute(i).inserted_primary_key[0]
+                    # increase +1 on current_participants from this event
+                    self.session.query(self.__eventsTable).filter(self.__eventsTable.id == booking['event_id']).update({'current_participants': event.current_participants + 1})
+                    self.session.commit()
                 else:
                     newBookingId = result[0].id
                 

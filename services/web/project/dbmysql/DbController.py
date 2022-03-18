@@ -201,6 +201,7 @@ class DbController():
             "event_id": 0,
         }
         __connection = self.__engine.connect()
+        newEventId = -1
 
         try:
             with self.session.begin():
@@ -466,12 +467,15 @@ class DbController():
                 query = select([self.__usersTable]).where(self.__usersTable.c.username == username)
                 result = __connection.execute(query).fetchall()
                 
-                # check if list not empty
-                if(not result):
-                    if(result[0] != None):
-                        #result = self.__parser.user2OrderedDict(result[0])
-                        #result = result["id"]
-                        return True
+                try:
+                    # check if list not empty
+                    if(not result):
+                        if(result[0] != None):
+                            #result = self.__parser.user2OrderedDict(result[0])
+                            #result = result["id"]
+                            return True
+                except IndexError:
+                    return False
             
         except Exception as e:
             logging.error("{message}.".format(message=e))

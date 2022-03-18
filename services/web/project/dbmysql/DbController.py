@@ -467,15 +467,12 @@ class DbController():
                 query = select([self.__usersTable]).where(self.__usersTable.c.username == username)
                 result = __connection.execute(query).fetchall()
                 
-                try:
-                    # check if list not empty
-                    if(not result):
-                        if(result[0] != None):
-                            #result = self.__parser.user2OrderedDict(result[0])
-                            #result = result["id"]
-                            return True
-                except IndexError:
-                    return False
+                # check if list not empty
+                if(not result):
+                    if(result[0] != None):
+                        #result = self.__parser.user2OrderedDict(result[0])
+                        #result = result["id"]
+
             
         except Exception as e:
             logging.error("{message}.".format(message=e))

@@ -638,7 +638,8 @@ def register():
     email = request.form.get('email', default=None, type=str)
 
     # check if username not already taken
-    if(middleware.checkUserExist(username) == True):
+    if(middleware.checkUserExist(username)):
+        logging.info(str(username) + "already exists")
         return jsonify(msg=errors.USER_ALREADY_EXISTS), 409
 
     return Response(middleware.register(username, password, email), status=200, mimetype='application/json')

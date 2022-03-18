@@ -475,8 +475,8 @@ class DbController():
         except Exception as e:
             logging.error("{message}.".format(message=e))
             result = None
+            
         __connection.close()
-
         return False
 
 

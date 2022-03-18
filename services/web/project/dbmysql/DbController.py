@@ -470,6 +470,7 @@ class DbController():
                 # check if list not empty
                 if(not result):
                     if(result[0] != None):
+                        return True
                         #result = self.__parser.user2OrderedDict(result[0])
                         #result = result["id"]
 

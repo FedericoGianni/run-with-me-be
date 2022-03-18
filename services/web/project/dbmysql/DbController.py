@@ -340,7 +340,7 @@ class DbController():
                 self.session.execute(b)
 
                 # decrease -1 on current_participants from this event
-                self.session.query(self.__eventsTable).filter(self.__eventsTable.c.id == booking['event_id']).update({'current_participants': self.__eventsTable.c.current_participants - 1})
+                self.session.query(self.__eventsTable).filter(self.__eventsTable.c.id == event_id).update({'current_participants': self.__eventsTable.c.current_participants - 1})
                 self.session.commit()
                 
                 # TODO

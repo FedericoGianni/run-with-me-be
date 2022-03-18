@@ -469,13 +469,13 @@ class DbController():
                 
                 # check if list not empty
                 if(not result):
-                    if(result[0] != None):
-                        return True
+                    #if(result[0] != None):
+                    return True
                                     
         except Exception as e:
             logging.error("{message}.".format(message=e))
             result = None
-            
+
         __connection.close()
         return False
 

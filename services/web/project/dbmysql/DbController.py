@@ -303,9 +303,18 @@ class DbController():
 
         try:
             with self.session.begin():
-                i = insert(self.__bookingsTable)
-                i = i.values(booking)
-                newBookingId = self.session.execute(i).inserted_primary_key[0]
+                #check that booking from that user for that event has not already made
+                query = select(self.__bookingsTable).where(and_(self.__bookingsTable.c.event_id == booking['event_id'], self.__bookingsTable.c.user_id == booking['user_id']))
+                result = __connection.execute(query).fetchall()
+                logging.info("addBooking checking if booking not already made")
+                
+                # insert booking only if not already present
+                if(not result):
+                    i = insert(self.__bookingsTable)
+                    i = i.values(booking)
+                    newBookingId = self.session.execute(i).inserted_primary_key[0]
+                
+
             
         except Exception as e:
             logging.error("{message}.".format(message=e))
@@ -321,7 +330,7 @@ class DbController():
         
         try:
             with self.session.begin():
-                # 1 delete booking from bookings
+                # 1 delete booking from bookingswhere
                 b = delete(self.__bookingsTable).where(and_(self.__bookingsTable.c.event_id == event_id, self.__bookingsTable.c.user_id == user_id))
                 self.session.execute(b)
                 
@@ -503,4 +512,3 @@ class DbController():
             logging.error("{message}.".format(message=e))
             #result = False, GenericDatabaseError(e)
             result = None
-

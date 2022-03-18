@@ -1,7 +1,7 @@
 import logging
 import collections
-from flask import json
 import datetime
+import json
 
 class DbParser():
     def __init__(self) -> None:

@@ -11,6 +11,15 @@ class DbParser():
     def dateStringToTimeStamp(self, date):
         return date.timestamp()
 
+    def errorMsg2Json(self, msg):
+
+        d = collections.OrderedDict()
+        d["msg"] = msg
+        j = json.dumps(d)
+        logging.info(j)
+
+        return j
+
     def event2OrderedDict(self, row):
         
         # Convert query to objects of key-value pairs

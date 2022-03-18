@@ -164,13 +164,6 @@ class Middleware():
 
     def register(self, username, password, email):
 
-        # check if user does not already exist
-        if(self.dbController.checkUserExist(username)):
-            d = {"msg": errors.USER_ALREADY_EXISTS}
-            j = json.dumps(d)
-            return j
-
-
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         logging.info("generating hash from password...")
 
@@ -185,4 +178,7 @@ class Middleware():
 
     def login(self, username, password):
         return self.dbController.login(username, password)
+
+    def checkUserExist(self, username):
+        return self.dbController.checkUserExist(username)
 

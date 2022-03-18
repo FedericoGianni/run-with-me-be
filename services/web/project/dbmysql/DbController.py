@@ -480,13 +480,17 @@ class DbController():
         newUserId = -1
         __connection = self.__engine.connect()
 
+        # TODO check username già preso
+        if(not (self.checkUserExist(newUser['username']))):
+            print("user already exists: " + newUser['username'])
+            return self.__parser.userId2Json(newUserId)
+
         try:
             with self.session.begin():
-
-                i = insert(self.__usersTable)
-                i = i.values(newUser)
-                newUserId = self.session.execute(i).inserted_primary_key[0]
-            
+                    i = insert(self.__usersTable)
+                    i = i.values(newUser)
+                    newUserId = self.session.execute(i).inserted_primary_key[0]    
+                
         except Exception as e:
             logging.error("{message}.".format(message=e))
             result = None

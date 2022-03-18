@@ -338,6 +338,10 @@ class DbController():
                 # 1 delete booking from bookingswhere
                 b = delete(self.__bookingsTable).where(and_(self.__bookingsTable.c.event_id == event_id, self.__bookingsTable.c.user_id == user_id))
                 self.session.execute(b)
+
+                # decrease -1 on current_participants from this event
+                self.session.query(self.__eventsTable).filter(self.__eventsTable.c.id == booking['event_id']).update({'current_participants': self.__eventsTable.c.current_participants - 1})
+                self.session.commit()
                 
                 # TODO
                 # 2 if no more bookings, delete event? NOT SURE IF NEEDED 

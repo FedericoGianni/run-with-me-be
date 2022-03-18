@@ -470,7 +470,7 @@ class DbController():
                 logging.info("checkUserExist: " + str(result))
                 
                 # check if list not empty
-                if(not result):
+                if(result):
                     if(result[0] != None):
                         return True
                                     
@@ -489,7 +489,7 @@ class DbController():
         __connection = self.__engine.connect()
 
         # TODO check username già preso
-        if((self.checkUserExist(newUser['username']))):
+        if(self.checkUserExist(newUser['username']):
             print("user already exists: " + newUser['username'])
             return self.__parser.userId2Json(newUserId)
 

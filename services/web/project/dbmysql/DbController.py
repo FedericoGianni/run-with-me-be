@@ -313,6 +313,8 @@ class DbController():
                     i = insert(self.__bookingsTable)
                     i = i.values(booking)
                     newBookingId = self.session.execute(i).inserted_primary_key[0]
+                else:
+                    newBookingId = result[0].id
                 
 
             

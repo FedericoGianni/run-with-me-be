@@ -336,13 +336,19 @@ class DbController():
         
         try:
             with self.session.begin():
+
+                # TODO check if booking exist, otherwise it will decrease participants even if it shouldn't
+
+
                 # 1 delete booking from bookingswhere
                 b = delete(self.__bookingsTable).where(and_(self.__bookingsTable.c.event_id == event_id, self.__bookingsTable.c.user_id == user_id))
-                self.session.execute(b)
-
+                result = self.session.execute(b)
+                
+                # if rowcount > 0 then it actually deleted booking
+                if(result.rowcount > 0):
                 # decrease -1 on current_participants from this event
-                self.session.query(self.__eventsTable).filter(self.__eventsTable.c.id == event_id).update({'current_participants': self.__eventsTable.c.current_participants - 1})
-                self.session.commit()
+                    self.session.query(self.__eventsTable).filter(self.__eventsTable.c.id == event_id).update({'current_participants': self.__eventsTable.c.current_participants - 1})
+                    self.session.commit()
                 
                 # TODO
                 # 2 if no more bookings, delete event? NOT SURE IF NEEDED 

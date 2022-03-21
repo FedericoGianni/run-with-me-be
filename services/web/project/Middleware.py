@@ -100,9 +100,12 @@ class Middleware():
         
         #removing null parameters 
         updatedEvent = {k: v for k, v in updatedEvent.items() if v}
-        if(updatedEvent['date'] != None):
-            updatedEvent['date'] = datetime.datetime.fromtimestamp(updatedEvent['date'])
-
+        try:
+            if(updatedEvent['date'] != None):
+                updatedEvent['date'] = datetime.datetime.fromtimestamp(updatedEvent['date'])
+        except KeyError: 
+            logging.warning("updateEvent date not present in request")
+            
         return self.dbController.updateEvent(event_id, updatedEvent)
 
 # BOOKINGS
@@ -124,6 +127,9 @@ class Middleware():
 
     def delBooking(self, user_id, event_id):
         return self.dbController.delBooking(user_id, event_id)
+
+    def checkBookingsFull(self, event_id):
+        return self.dbController.checkBookingsFull(event_id)
 
     
 # USERS
@@ -181,4 +187,5 @@ class Middleware():
 
     def checkUserExist(self, username):
         return self.dbController.checkUserExist(username)
+
 

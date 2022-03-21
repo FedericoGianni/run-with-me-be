@@ -267,6 +267,16 @@ class DbController():
 
 # BOOKINGS
 
+    def checkBookingsFull(self, event_id):
+        
+        events = self.getEventByIdQuery(event_id)
+        events = self.__parser.events2OrderedDict(events)
+        event = events[0]
+
+        if(event['current_participants'] == event['max_participants']):
+            return True
+        return False
+
     def getBookingsByEventIdQuery(self, event_id):
         __connection = self.__engine.connect()
         try:

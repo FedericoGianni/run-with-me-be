@@ -405,6 +405,11 @@ def addBooking():
     event_id = request.args.get('event_id', default=None, type=int)
     if(utils.checkId(event_id) == False):
         return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+
+    # check event bookings not full before adding a new booking
+    if(middleware.checkBookingsFull(event_id)):
+        logging.info("can't add booking to event: " + str(event_id) + " bookings full.")
+        return jsonify(msg=errors.EVENT_FULL), 409
     
     return Response(middleware.addBooking(user_id, event_id), status=200, mimetype='application/json')
 

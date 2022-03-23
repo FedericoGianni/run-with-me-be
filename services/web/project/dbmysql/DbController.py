@@ -93,12 +93,14 @@ class DbController():
             
             #))
 
-            query = select([self.__eventsTable]).where(6371 * func.ACOS(
+            # return only events not already done since we won't delete old events for statistics
+            query = select([self.__eventsTable]).where(and_(6371 * func.ACOS(
             func.COS(func.RADIANS(lat))
             * func.COS(func.RADIANS(self.__eventsTable.c.starting_point_lat))
             * func.COS(func.RADIANS(self.__eventsTable.c.starting_point_long) - func.RADIANS(long))
             + func.SIN(func.RADIANS(lat))
-            * func.SIN(func.RADIANS(self.__eventsTable.c.starting_point_lat))) <= max_dist_km)
+            * func.SIN(func.RADIANS(self.__eventsTable.c.starting_point_lat))) <= max_dist_km),
+            (self.__eventsTable.c.date >= func.NOW()))
 
             result = __connection.execute(query).fetchall()
 

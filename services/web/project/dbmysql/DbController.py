@@ -94,6 +94,7 @@ class DbController():
             #))
 
             # return only events not already done since we won't delete old events for statistics
+            # TODO for performance purposes it should be better to have 2 different tables, one for upcoming events one for old events
             query = select([self.__eventsTable]).where(and_(6371 * func.ACOS(
             func.COS(func.RADIANS(lat))
             * func.COS(func.RADIANS(self.__eventsTable.c.starting_point_lat))

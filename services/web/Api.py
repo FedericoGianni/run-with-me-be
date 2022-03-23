@@ -398,9 +398,7 @@ def getBookingsByUserId():
 @jwt_required()
 def addBooking():
     
-    user_id = request.args.get('user_id', default=None, type=int)
-    if(utils.checkId(user_id) == False):
-        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    user_id = get_jwt_identity()
 
     event_id = request.args.get('event_id', default=None, type=int)
     if(utils.checkId(event_id) == False):
@@ -417,9 +415,7 @@ def addBooking():
 @jwt_required()
 def delBooking():
 
-    user_id = request.form.get('user_id', default=None, type=int)
-    if(utils.checkId(user_id) == False):
-        return Response(errors.GENERIC_BAD_REQUEST_ERROR, status=400)
+    user_id = get_jwt_identity()
 
     event_id = request.form.get('event_id', default=None, type=int)
     if(utils.checkId(event_id) == False):

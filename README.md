@@ -3,10 +3,8 @@
 </p>
 
 ### Requirements
-Docker, Docker-Compose
-[Docker Installation Guide](https://docs.docker.com/get-docker/)
-[Docker Compose Installation Guide](https://docs.docker.com/compose/install/)
-
+* Docker [Docker Installation Guide](https://docs.docker.com/get-docker/)  
+* Docker-Compose  [Docker Compose Installation Guide](https://docs.docker.com/compose/install/)
 
 ### Usage
 

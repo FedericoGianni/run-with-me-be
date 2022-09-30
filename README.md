@@ -1,4 +1,4 @@
-
+![Logo](https://github.com/FedericoGianni/run-with-me-be/blob/main/deliverables/logo_gradient.png)
 
 ### Usage
 

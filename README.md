@@ -2,6 +2,12 @@
 <img src="https://github.com/FedericoGianni/run-with-me-be/blob/main/deliverables/logo_gradient.png">
 </p>
 
+### Requirements
+Docker, Docker-Compose
+[Docker Installation Guide](https://docs.docker.com/get-docker/)
+[Docker Compose Installation Guide](https://docs.docker.com/compose/install/)
+
+
 ### Usage
 
 Uses gunicorn + nginx.
